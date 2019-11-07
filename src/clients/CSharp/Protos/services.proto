@@ -1,0 +1,150 @@
+/* Options:
+Date: 2019-11-06 22:22:10
+Version: 5.71
+Tip: To override a DTO option, remove "//" prefix before updating
+BaseUrl: https://localhost:5001
+
+//GlobalNamespace: 
+//AddDescriptionAsComments: True
+*/
+
+syntax = "proto3";
+
+option csharp_namespace = "TodoWorld";
+
+service GrpcServices {
+
+    rpc PostCreateTodo(CreateTodo) returns (CreateTodoResponse) {}
+
+    rpc CallDeleteTodo(DeleteTodo) returns (EmptyResponse) {}
+
+    rpc CallDeleteTodos(DeleteTodos) returns (EmptyResponse) {}
+
+    rpc CallGetFile(GetFile) returns (FileContent) {}
+
+    rpc CallGetTodo(GetTodo) returns (GetTodoResponse) {}
+
+    rpc CallGetTodos(GetTodos) returns (GetTodosResponse) {}
+
+    rpc GetHello(Hello) returns (HelloResponse) {}
+
+    rpc PostHello(Hello) returns (HelloResponse) {}
+
+    rpc PutHello(Hello) returns (HelloResponse) {}
+
+    rpc DeleteHello(Hello) returns (HelloResponse) {}
+
+    rpc PatchHello(Hello) returns (HelloResponse) {}
+
+    rpc PostResetTodos(ResetTodos) returns (EmptyResponse) {}
+
+    rpc ServerStreamFiles(StreamFiles) returns (stream FileContent) {}
+
+    rpc ServerStreamServerEvents(StreamServerEvents) returns (stream StreamServerEventsResponse) {}
+
+    rpc PutUpdateTodo(UpdateTodo) returns (EmptyResponse) {}
+}
+
+message CreateTodo {
+   string Title = 1;
+   int32 Order = 2;
+}
+message CreateTodoResponse {
+   Todo Result = 1;
+   ResponseStatus ResponseStatus = 2;
+}
+message DeleteTodo {
+   int64 Id = 1;
+}
+message DeleteTodos {
+   repeated int64 Ids = 1 [packed = false];
+}
+message EmptyResponse {
+   ResponseStatus ResponseStatus = 1;
+}
+message FileContent {
+   string Name = 1;
+   string Type = 2;
+   int32 Length = 3;
+   bytes Body = 4;
+   ResponseStatus ResponseStatus = 5;
+}
+message GetFile {
+   string Path = 1;
+}
+message GetTodo {
+   int64 Id = 1;
+}
+message GetTodoResponse {
+   Todo Result = 1;
+   ResponseStatus ResponseStatus = 2;
+}
+message GetTodos {
+}
+message GetTodosResponse {
+   repeated Todo Results = 1;
+   ResponseStatus ResponseStatus = 2;
+}
+message Hello {
+   string Name = 1;
+}
+message HelloResponse {
+   string Result = 1;
+   ResponseStatus ResponseStatus = 2;
+}
+message ResetTodos {
+}
+message ResponseError {
+   string ErrorCode = 1;
+   string FieldName = 2;
+   string Message = 3;
+   map<string,string> Meta = 4;
+}
+message ResponseStatus {
+   string ErrorCode = 1;
+   string Message = 2;
+   string StackTrace = 3;
+   repeated ResponseError Errors = 4;
+   map<string,string> Meta = 5;
+}
+message StreamFiles {
+   repeated string Paths = 1;
+}
+message StreamServerEvents {
+   repeated string Channels = 1;
+}
+message StreamServerEventsResponse {
+   int64 EventId = 1;
+   string Channel = 2;
+   string Selector = 4;
+   string Json = 5;
+   string Op = 6;
+   string Target = 7;
+   string CssSelector = 8;
+   map<string,string> Meta = 9;
+   string UserId = 10;
+   string DisplayName = 11;
+   string ProfileUrl = 12;
+   bool IsAuthenticated = 13;
+   repeated string Channels = 14;
+   int64 CreatedAt = 15;
+   string Id = 21;
+   string UnRegisterUrl = 22;
+   string UpdateSubscriberUrl = 23;
+   string HeartbeatUrl = 24;
+   int64 HeartbeatIntervalMs = 25;
+   int64 IdleTimeoutMs = 26;
+   ResponseStatus ResponseStatus = 30;
+}
+message Todo {
+   int64 Id = 1;
+   string Title = 2;
+   int32 Order = 3;
+   bool Completed = 4;
+}
+message UpdateTodo {
+   int64 Id = 1;
+   string Title = 2;
+   int32 Order = 3;
+   bool Completed = 4;
+}
