@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp", "clients\CSharp\CS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpGeneric", "clients\CSharpGeneric\CSharpGeneric.csproj", "{05AE56A8-224E-4A83-B679-496658D17BF4}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpGeneric", "clients\FSharpGeneric\FSharpGeneric.fsproj", "{2B8F3D31-C027-4316-94DC-AB012CDB1EAA}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "VbGeneric", "clients\VbGeneric\VbGeneric.vbproj", "{879F2622-BE37-45E1-AFFD-91C72E9DFD56}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +51,14 @@ Global
 		{05AE56A8-224E-4A83-B679-496658D17BF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05AE56A8-224E-4A83-B679-496658D17BF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05AE56A8-224E-4A83-B679-496658D17BF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B8F3D31-C027-4316-94DC-AB012CDB1EAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B8F3D31-C027-4316-94DC-AB012CDB1EAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B8F3D31-C027-4316-94DC-AB012CDB1EAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B8F3D31-C027-4316-94DC-AB012CDB1EAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{879F2622-BE37-45E1-AFFD-91C72E9DFD56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{879F2622-BE37-45E1-AFFD-91C72E9DFD56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{879F2622-BE37-45E1-AFFD-91C72E9DFD56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{879F2622-BE37-45E1-AFFD-91C72E9DFD56}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,5 +69,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{00DAF8C4-4E97-4939-A08E-434BF18B0D89} = {795882D0-9956-4DCF-85C1-EA0C43018B95}
 		{05AE56A8-224E-4A83-B679-496658D17BF4} = {795882D0-9956-4DCF-85C1-EA0C43018B95}
+		{2B8F3D31-C027-4316-94DC-AB012CDB1EAA} = {795882D0-9956-4DCF-85C1-EA0C43018B95}
+		{879F2622-BE37-45E1-AFFD-91C72E9DFD56} = {795882D0-9956-4DCF-85C1-EA0C43018B95}
 	EndGlobalSection
 EndGlobal

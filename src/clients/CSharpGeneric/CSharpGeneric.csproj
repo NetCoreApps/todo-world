@@ -8,6 +8,7 @@
     <ItemGroup>
         <PackageReference Include="NUnit" Version="3.12.*" />
         <PackageReference Include="NUnit3TestAdapter" Version="3.15.*" />
+        <!-- need to comment out Microsoft.NET.Test.Sdk below to be able to run Program.cs -->
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.*" />
     </ItemGroup>
 
