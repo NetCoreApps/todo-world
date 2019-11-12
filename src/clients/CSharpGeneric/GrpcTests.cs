@@ -4,7 +4,7 @@ using NUnit.Framework;
 using ServiceStack;
 using TodoWorld.ServiceModel;
 
-namespace CSharpGrpcServiceClient
+namespace CSharpGeneric
 {
     public class GrpcTests
     {

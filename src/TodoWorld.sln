@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "clients", "clients", "{7958
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp", "clients\CSharp\CSharp.csproj", "{00DAF8C4-4E97-4939-A08E-434BF18B0D89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpGrpcServiceClient", "clients\CSharpGrpcServiceClient\CSharpGrpcServiceClient.csproj", "{05AE56A8-224E-4A83-B679-496658D17BF4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpGeneric", "clients\CSharpGeneric\CSharpGeneric.csproj", "{05AE56A8-224E-4A83-B679-496658D17BF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

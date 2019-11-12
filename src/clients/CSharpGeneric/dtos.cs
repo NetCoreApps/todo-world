@@ -1,5 +1,5 @@
 /* Options:
-Date: 2019-11-06 23:10:54
+Date: 2019-11-09 16:48:14
 Version: 5.71
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: https://localhost:5001
@@ -141,6 +141,16 @@ namespace TodoWorld.ServiceModel
 
         [DataMember(Order=2)]
         public virtual ResponseStatus ResponseStatus { get; set; }
+    }
+
+    [Route("/hello-secure")]
+    [Route("/hello-secure/{Name}")]
+    [DataContract]
+    public partial class HelloSecure
+        : IReturn<HelloResponse>
+    {
+        [DataMember(Order=1)]
+        public virtual string Name { get; set; }
     }
 
     [Route("/todos/reset", "POST")]

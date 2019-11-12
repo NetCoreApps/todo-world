@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace CSharpGrpcServiceClient
+namespace CSharpGeneric
 {
     public class Program
     {

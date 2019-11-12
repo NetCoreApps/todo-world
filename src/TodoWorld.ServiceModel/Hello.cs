@@ -31,4 +31,13 @@ namespace TodoWorld.ServiceModel
         [DataMember(Order = 2)]
         public ResponseStatus ResponseStatus { get; set; }
     }
+    
+    [Route("/hello-secure")]
+    [Route("/hello-secure/{Name}")]
+    [DataContract]
+    public class HelloSecure : IReturn<HelloResponse>
+    {
+        [DataMember(Order = 1)]
+        public string Name { get; set; }
+    }
 }

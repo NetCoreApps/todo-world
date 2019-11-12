@@ -19,6 +19,7 @@ namespace CSharp
 
         public StatusCode StatusCode => this.Status.StatusCode;
         public ResponseStatus GetResponseStatus() => Headers.GetResponseStatus();
+        public string ErrorCode => GetResponseStatus()?.ErrorCode ?? Status.Detail;
         public int HttpStatus => Headers.GetHttpStatus();
     }
     
@@ -74,6 +75,18 @@ namespace CSharp
         {
             var httpStatus = GetHeader(headers, "httpstatus");
             return httpStatus != null ? int.Parse(httpStatus)  : default;
+        }
+
+        public static Metadata WithBasicAuth(this Metadata headers, string userName, string password)
+        {
+            headers.Add("Authorization", "Basic " + Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(userName + ":" + password)));
+            return headers;
+        }
+
+        public static Metadata WithToken(this Metadata headers, string token)
+        {
+            headers.Add("Authorization", "Bearer " + token);
+            return headers;
         }
     }
 }

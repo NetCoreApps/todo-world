@@ -15,8 +15,6 @@ namespace TodoWorld.ServiceInterface
         
         public IServerEvents ServerEvents { get; set; }
         
-        public object Any(Hello request) => new HelloResponse { Result = $"Hello, {request.Name}!" };
-
         public object Get(GetTodo request) => new GetTodoResponse { Result = Todos.FirstOrDefault(x => x.Id == request.Id) };
 
         public object Get(GetTodos request) => new GetTodosResponse { Results = Todos };

@@ -22,7 +22,7 @@ namespace TodoWorld.Tests
         [Test]
         public void Can_call_MyServices()
         {
-            var service = appHost.Container.Resolve<TodoServices>();
+            var service = appHost.Container.Resolve<MyServices>();
 
             var response = (HelloResponse)service.Any(new Hello { Name = "World" });
 

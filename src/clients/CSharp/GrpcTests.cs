@@ -10,11 +10,8 @@ namespace CSharp
 {
     public class GrpcTests
     {
-        private static GrpcServices.GrpcServicesClient CreateClient()
-        {
-            var channel = GrpcChannel.ForAddress("https://localhost:5001");
-            return new GrpcServices.GrpcServicesClient(channel);
-        }
+        private static GrpcServices.GrpcServicesClient CreateClient() => 
+            new GrpcServices.GrpcServicesClient(GrpcChannel.ForAddress("https://localhost:5001"));
 
         [Test]
         public async Task Can_call_Hello()
@@ -22,6 +19,16 @@ namespace CSharp
             // The port number(5001) must match the port of the gRPC server.
             var client = CreateClient();
             var response = await client.GetHelloAsync(new Hello { Name = "ServiceStack gRPC" });
+            
+            Assert.That(response.Result, Is.EqualTo("Hello, ServiceStack gRPC!"));
+        }
+
+        [Test]
+        public void Can_call_Hello_sync()
+        {
+            // The port number(5001) must match the port of the gRPC server.
+            var client = CreateClient();
+            var response = client.GetHello(new Hello { Name = "ServiceStack gRPC" });
             
             Assert.That(response.Result, Is.EqualTo("Hello, ServiceStack gRPC!"));
         }
@@ -119,7 +126,7 @@ namespace CSharp
             {
                 var client = CreateClient();
 
-                var response = client.Exec(c => c.PutUpdateTodoAsync(new UpdateTodo {
+                var response = await client.Exec(c => c.PutUpdateTodoAsync(new UpdateTodo {
                     Id = 0, 
                     Title = "",
                     Order = -1,
@@ -129,6 +136,7 @@ namespace CSharp
             {
                 Assert.That(ex.Status.Detail, Is.EqualTo("GreaterThan"));
                 Assert.That(ex.StatusCode, Is.EqualTo(StatusCode.Internal));
+                Assert.That(ex.ErrorCode, Is.EqualTo("GreaterThan"));
                 AssertUpdateTodoValidationErrors(ex.GetResponseStatus());
             }
         }
