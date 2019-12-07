@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using ServiceStack;
 using ServiceStack.Testing;
+using ServiceStack.Text;
 using TodoWorld.ServiceInterface;
 using TodoWorld.ServiceModel;
 

@@ -121,7 +121,6 @@ namespace CSharp
         [Test]
         public async Task Can_access_validation_Errors()
         {
-            AsyncUnaryCall<EmptyResponse> call = null;
             try
             {
                 var client = CreateClient();
