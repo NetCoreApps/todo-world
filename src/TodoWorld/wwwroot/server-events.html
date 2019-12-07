@@ -1,0 +1,61 @@
+{{#script}}
+window.TODOS = {{ 'GetTodos' |> execService |> get('Results') |> json }};
+{{/script}}
+
+{{#raw}}
+<section class="todoapp">
+    <header class="header">
+        <h1>Sync Todos</h1>
+    </header>
+    <section class="main" v-show="todos.length" v-cloak>
+        <ul class="todo-list">
+            <li v-for="todo in filteredTodos"
+                class="todo"
+                :key="todo.id"
+                :class="{ completed: todo.completed }">
+                <div class="view">
+                    <input class="toggle" type="checkbox" v-model="todo.completed">
+                    <label>{{ todo.title }}</label>
+                </div>
+                <input class="edit" type="text" v-model="todo.title">
+            </li>
+        </ul>
+    </section>
+    <footer class="footer" v-show="todos.length" v-cloak>
+    <span class="todo-count">
+      <strong>{{ remaining }}</strong> {{ remaining | pluralize }} left
+    </span>
+        <ul class="filters">
+            <li><a href="#/all" :class="{ selected: visibility == 'all' }">All</a></li>
+            <li><a href="#/active" :class="{ selected: visibility == 'active' }">Active</a></li>
+            <li><a href="#/completed" :class="{ selected: visibility == 'completed' }">Completed</a></li>
+        </ul>
+    </footer>
+</section>
+{{/raw}}
+
+{{#raw appendTo scripts}}
+<script>
+    var sse = new ServerEventsClient('/', ['todos'], {
+        receivers: {
+            todos: {
+                create: function(todo, msg) {
+                    TODOS.push(todo);
+                },
+                update: function(todo, msg) {
+                    var index = TODOS.findIndex(function(x) { return x.id === todo.id });
+                    if (index !== -1) {
+                        TODOS.splice(index, 1, todo);
+                    }
+                },
+                delete: function(id, msg) {
+                    var index = TODOS.findIndex(function(x) { return x.id === id });
+                    if (index !== -1) {
+                        TODOS.splice(index, 1);
+                    }                    
+                }
+            }
+        }
+    }).start();
+</script>
+{{/raw}}

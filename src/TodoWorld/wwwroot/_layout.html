@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Todo World!</title>
+    <link rel="stylesheet" href="/assets/css/base.css">
+    <link rel="stylesheet" href="/assets/css/index.css">
+    <style> [v-cloak] { display: none; } </style>
+</head>
+<body>
+    {{page}}
+
+    <script>exports=window</script>
+    <script src="/assets/js/servicestack-client.umd.js"></script>
+    <script src="/assets/js/dtos.js"></script>
+    <script>
+        for (var k in exports["@servicestack/client"]) window[k] = exports["@servicestack/client"][k]; 
+        var client = new JsonServiceClient('/');
+    </script>
+
+    <script src="/assets/js/vue.min.js"></script>
+    <script src="/assets/js/app.js"></script>
+    {{scripts | raw}}
+</body>
+</html>
