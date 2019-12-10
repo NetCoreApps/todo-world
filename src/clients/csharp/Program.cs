@@ -12,14 +12,14 @@ namespace CSharp
             var client = new GrpcServices.GrpcServicesClient(GrpcChannel.ForAddress("https://localhost:5001"));
             await client.PostResetTodosAsync(new ResetTodos());
 
-            //GET /todos
-            var all = await client.CallGetTodosAsync(new GetTodos());
-            Console.WriteLine($"todos: {all.Results?.Count ?? 0}");
-
             //POST /todos
             var todo = (await client.PostCreateTodoAsync(new CreateTodo { Title = "ServiceStack" })).Result;
             Console.WriteLine($"new todo Id: {todo.Id}, Title: {todo.Title}");
             
+            //GET /todos
+            var all = await client.CallGetTodosAsync(new GetTodos());
+            Console.WriteLine($"todos: {all.Results?.Count ?? 0}");
+
             //GET /todos/1
             todo = (await client.CallGetTodoAsync(new GetTodo { Id = todo.Id })).Result;
             Console.WriteLine($"get todo Id: {todo.Id}, Title: {todo.Title}");

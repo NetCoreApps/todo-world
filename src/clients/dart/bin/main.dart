@@ -17,13 +17,13 @@ void todoExample(GrpcServicesClient client) async {
 
   await client.postResetTodos(ResetTodos());
 
-  //GET /todos
-  var all = await client.callGetTodos(GetTodos());
-  print('todos: ${all.results.length}');
-
   //POST /todos
   var todo = (await client.postCreateTodo(CreateTodo()..title = 'ServiceStack')).result;
   print('new todo Id: ${todo.id}, Title: ${todo.title}');
+
+  //GET /todos
+  var all = await client.callGetTodos(GetTodos());
+  print('todos: ${all.results.length}');
 
   //GET /todos/1
   todo = (await client.callGetTodo(GetTodo()..id = todo.id)).result;

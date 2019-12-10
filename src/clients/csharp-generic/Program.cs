@@ -12,14 +12,14 @@ namespace CSharpGeneric
             var client = new GrpcServiceClient("https://localhost:5001");
             await client.PostAsync(new ResetTodos());
 
-            //GET /todos
-            var all = await client.GetAsync(new GetTodos());
-            $"todos: {all.Results?.Count ?? 0}".Print();
-
             //POST /todos
             var todo = (await client.PostAsync(new CreateTodo { Title = "ServiceStack" })).Result;
             $"new todo Id: {todo.Id}, Title: {todo.Title}".Print();
             
+            //GET /todos
+            var all = await client.GetAsync(new GetTodos());
+            $"todos: {all.Results?.Count ?? 0}".Print();
+
             //GET /todos/1
             todo = (await client.GetAsync(new GetTodo { Id = todo.Id })).Result;
             $"get todo Id: {todo.Id}, Title: {todo.Title}".Print();
