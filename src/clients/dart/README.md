@@ -1,6 +1,6 @@
 Prerequisites:
 
-    - Install [Dart](https://dart.dev/get-dart) or [Flutter](https://flutter.dev/docs/get-started/install)
+  - Install [Dart](https://dart.dev/get-dart) or [Flutter](https://flutter.dev/docs/get-started/install)
 
 Install [stagehand](https://pub.dev/packages/stagehand):
 
