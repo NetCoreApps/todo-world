@@ -12,15 +12,15 @@ let todo () =
         let client = new GrpcServiceClient("https://localhost:5001")
         do! client.PostAsync(new ResetTodos())
 
-        //GET /todos
-        let! all = client.GetAsync(new GetTodos())
-        printfn "todos: %i" (seqCount all.Results)
-        
         //POST /todos
         let! t = client.PostAsync(new CreateTodo(Title = "ServiceStack"))
         let todo = t.Result;
         printfn "new todo Id: %i, Title: %s" todo.Id todo.Title
 
+        //GET /todos
+        let! all = client.GetAsync(new GetTodos())
+        printfn "todos: %i" (seqCount all.Results)
+        
         //GET /todos/1
         let! t = client.GetAsync(new GetTodo(Id = todo.Id))
         let todo = t.Result;
