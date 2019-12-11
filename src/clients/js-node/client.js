@@ -70,6 +70,7 @@ async function main() {
     console.log(`todos: ${all.getResultsList().length}`);
 }
 
+// Necessary until gRPC provides a native async friendly solution https://github.com/grpc/grpc-node/issues/54
 function promisifyAll(client) {
     const to = {};
     for (var k in client) {
