@@ -5,7 +5,7 @@ Generate Python gRPC Client
 ### gRPC Python Quick Start Example
 
  - https://grpc.io/docs/tutorials/basic/python/
- - https://github.com/grpc/grpc/tree/master/examples/php
+ - https://github.com/grpc/grpc/tree/master/examples/python
 
 ### Setup
 
