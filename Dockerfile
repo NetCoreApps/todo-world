@@ -2,8 +2,11 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /app
 
 # copy csproj and restore as distinct layers
+COPY src/Host.sln .
 COPY src/TodoWorld/*.csproj ./TodoWorld/
-RUN dotnet restore TodoWorld/
+COPY src/TodoWorld.ServiceInterface/*.csproj ./TodoWorld.ServiceInterface/
+COPY src/TodoWorld.ServiceModel/*.csproj ./TodoWorld.ServiceModel/
+RUN dotnet restore
 
 # copy everything else and build app
 COPY src/TodoWorld/. ./TodoWorld/
