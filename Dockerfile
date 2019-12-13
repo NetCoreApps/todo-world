@@ -3,6 +3,7 @@ WORKDIR /app
 
 # copy csproj and restore as distinct layers
 COPY src/Host.sln .
+COPY src/NuGet.Config .
 COPY src/TodoWorld/*.csproj ./TodoWorld/
 COPY src/TodoWorld.ServiceInterface/*.csproj ./TodoWorld.ServiceInterface/
 COPY src/TodoWorld.ServiceModel/*.csproj ./TodoWorld.ServiceModel/
