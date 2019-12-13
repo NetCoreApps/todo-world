@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -22,6 +23,19 @@ namespace TodoWorld
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => {
+                    webBuilder.ConfigureKestrel(options =>
+                    {
+                        // Setup a HTTP/2 endpoint without TLS.
+                        options.ListenLocalhost(5000, o => o.Protocols = 
+                            HttpProtocols.Http2);
+                        
+                        // Setup a HTTP/2 endpoint with TLS.
+                        options.Listen(IPAddress.Loopback, 5001, listenOptions => {
+                            listenOptions.Protocols = HttpProtocols.Http2;
+                            listenOptions.UseHttps();
+//                            //listenOptions.UseHttps("dev.https.pfx","grpc");
+                        });
+                    });
                     webBuilder.UseModularStartup<Startup>();
                 });
     }
