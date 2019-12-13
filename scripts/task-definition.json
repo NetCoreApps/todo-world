@@ -19,6 +19,18 @@
                 {
                     "name": "VIRTUAL_HOST",
                     "value": "${AWS_VIRTUAL_HOST}"
+                },
+                {
+                    "name": "LETSENCRYPT_HOST",
+                    "value": "${LETSENCRYPT_HOST}"
+                },
+                {
+                    "name": "LETSENCRYPT_EMAIL",
+                    "value": "${LETSENCRYPT_EMAIL}"
+                },
+                {
+                    "name": "HSTS",
+                    "value": "off"
                 }
             ]
         }
