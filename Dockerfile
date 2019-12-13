@@ -6,12 +6,14 @@ COPY src/*.sln .
 COPY src/TodoWorld/*.csproj ./TodoWorld/
 COPY src/TodoWorld.ServiceInterface/*.csproj ./TodoWorld.ServiceInterface/
 COPY src/TodoWorld.ServiceModel/*.csproj ./TodoWorld.ServiceModel/
+COPY src/TodoWorld.Tests/*.csproj ./TodoWorld.Tests/
 RUN dotnet restore
 
 # copy everything else and build app
 COPY src/TodoWorld/. ./TodoWorld/
 COPY src/TodoWorld.ServiceInterface/. ./TodoWorld.ServiceInterface/
 COPY src/TodoWorld.ServiceModel/. ./TodoWorld.ServiceModel/
+COPY src/TodoWorld.Tests/. ./TodoWorld.Tests/
 WORKDIR /app/TodoWorld
 RUN dotnet publish -c Release -o out
 
