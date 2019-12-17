@@ -23,6 +23,8 @@ namespace TodoWorld
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => {
+
+/* Example of in-line configuration
                     webBuilder.ConfigureKestrel(options =>
                     {
                         // Setup a HTTP/2 endpoint without TLS.
@@ -32,10 +34,11 @@ namespace TodoWorld
                         // Setup a HTTP/2 endpoint with TLS.
                         options.Listen(IPAddress.Loopback, 5001, listenOptions => {
                             listenOptions.Protocols = HttpProtocols.Http2;
-                            listenOptions.UseHttps();
-//                            //listenOptions.UseHttps("dev.https.pfx","grpc");
+                            listenOptions.UseHttps(); // use self-signed certificate
+                            //listenOptions.UseHttps("dev.pfx","grpc"); // use local certificate
                         });
                     });
+*/
                     webBuilder.UseModularStartup<Startup>();
                 });
     }
