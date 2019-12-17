@@ -22,8 +22,8 @@ require dirname(__FILE__).'/vendor/autoload.php';
 @include_once dirname(__FILE__).'/TodoWorld/DeleteTodo.php';
 @include_once dirname(__FILE__).'/TodoWorld/DeleteTodoResponse.php';
 
-$client = new TodoWorld\GrpcServicesClient('localhost:5001', [
-    'credentials' => Grpc\ChannelCredentials::createSsl(file_get_contents(dirname(__FILE__).'../../cert/localhost.cer')),
+$client = new TodoWorld\GrpcServicesClient('localhost:5002', [
+    'credentials' => Grpc\ChannelCredentials::createInsecure(),
 ]);
 
 global $client;

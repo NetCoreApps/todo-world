@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log"
 
-	"crypto/tls"
-
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
@@ -16,13 +14,18 @@ import (
 
 const (
 	address = "localhost:5001"
+    crt = "../certs/dev.crt"
 )
 
 func main() {
-	fmt.Println("TODO EXAMPLE")
 
-	config := &tls.Config{}
-	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(credentials.NewTLS(config)))
+    // Load the certificates from disk
+	creds, err := credentials.NewClientTLSFromFile(crt, "")
+	if err != nil {
+		log.Fatalf("could not process the credentials: %v", err)
+	}
+
+	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(creds))
 	if err != nil {
 		log.Fatalf("fail to dial: %v", err)
 	}
@@ -32,10 +35,13 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
+
 	_, err = client.PostResetTodos(ctx, &pb.ResetTodos{})
 	if err != nil {
 		log.Fatalf("PostResetTodos: %v", err)
 	}
+
+	fmt.Println("TODO EXAMPLE")
 
 	//POST /todos
 	r1, err := client.PostCreateTodo(ctx, &pb.CreateTodo{Title: "ServiceStack"})

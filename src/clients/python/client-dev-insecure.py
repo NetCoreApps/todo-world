@@ -7,14 +7,7 @@ import services_pb2_grpc
 
 def run():
 
-    # For non-TLS use:
-    # with grpc.insecure_channel('localhost:5001') as channel:
-
-    with open('../cert/localhost.cer', 'rb') as f:
-        cer = f.read()
-    credentials = grpc.ssl_channel_credentials(cer)
-    with grpc.secure_channel('localhost:5001', credentials) as channel:
-
+    with grpc.insecure_channel('localhost:5002') as channel:
         client = services_pb2_grpc.GrpcServicesStub(channel)
         client.PostResetTodos(services_pb2.ResetTodos())
 

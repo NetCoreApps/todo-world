@@ -6,9 +6,23 @@ import NIOSSL
 do {
 
     let configuration = ClientConnection.Configuration(
-        target: .hostAndPort("localhost", 5000),
+        // dev secure
+        // target: .hostAndPort("localhost", 5001),
+        // eventLoopGroup: MultiThreadedEventLoopGroup(numberOfThreads: 1),
+        // tls: .init(certificateChain: try NIOSSLCertificate.fromPEMFile("../certs/dev.crt").map { .certificate($0) })
+
+        // dev insecure
+        target: .hostAndPort("localhost", 5002),
         eventLoopGroup: MultiThreadedEventLoopGroup(numberOfThreads: 1)
-        //tls: .init(certificateChain: try NIOSSLCertificate.fromPEMFile("../cert/localhost.cer").map { .certificate($0) })
+        
+        // prod secure
+        // target: .hostAndPort("todoworld.servicestack.net", 50051),
+        // eventLoopGroup: MultiThreadedEventLoopGroup(numberOfThreads: 1),
+        // tls: .init(certificateChain: try NIOSSLCertificate.fromPEMFile("../certs/prod.crt").map { .certificate($0) })
+
+        // prod insecure
+        // target: .hostAndPort("todoworld.servicestack.net", 5054),
+        // eventLoopGroup: MultiThreadedEventLoopGroup(numberOfThreads: 1)
     )
 
     let client = GrpcServicesServiceClient(connection: ClientConnection(configuration: configuration))

@@ -16,8 +16,8 @@ const fs = require('fs');
 
 async function main() {
 
-    const client = new GrpcServicesClient('localhost:5001', 
-        grpc.credentials.createSsl(fs.readFileSync('../cert/localhost.cer')));
+    const client = new GrpcServicesClient('todoworld.servicestack.net:5054', 
+        grpc.credentials.createInsecure());
     
     // Convert gRPC's callback APIs to await friendly promises
     const { 

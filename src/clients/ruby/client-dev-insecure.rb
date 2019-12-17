@@ -9,11 +9,8 @@ require 'services_pb'
 require 'services_services_pb'
 
 def main
-    # For non-TLS use:
-    # client = GrpcServices::Stub.new('localhost:5001', :this_channel_is_insecure)
 
-    credentials = GRPC::Core::ChannelCredentials.new(File.read('../cert/localhost.cer'))
-    client = GrpcServices::Stub.new('localhost:5001', credentials)
+    client = GrpcServices::Stub.new('localhost:5002', :this_channel_is_insecure)
     client.post_reset_todos(ResetTodos.new())
 
     # message = client.get_hello(Hello.new(Name:'World')).Result
