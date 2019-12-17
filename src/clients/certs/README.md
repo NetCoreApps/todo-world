@@ -55,3 +55,17 @@ Windows:
 
     C:\> bash gen-prod.https.sh <DOMAIN> <PASSWORD>
 
+### Nginx
+
+nginx.conf
+https://www.nginx.com/blog/nginx-1-13-10-grpc/
+
+### Lets Encrypt
+
+> In general, I recommend that people don’t use Let’s Encrypt certificates for gRPC or other internal RPC services. In my opinion, it’s both easier and safer to generate a single-purpose internal CA using something like minica and generate both server and client certificates with it. That way you don’t have to open up your RPC servers to the outside internet, plus you limit the scope of trust to just what’s needed for your internal RPCs, plus you can have a much longer certificate lifetime, plus you can get revocation that works.
+
+ - https://itnext.io/practical-guide-to-securing-grpc-connections-with-go-and-tls-part-2-994ef93b8ea9#4a43
+
+    # COPY /etc/letsencrypt/live/$DOMAIN/fullchain.pem TO letsencrypt.pem
+    # View cert contents: $ openssl x509 -in letsencrypt.pem -text -noout
+
