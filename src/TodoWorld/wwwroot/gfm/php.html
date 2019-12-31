@@ -103,4 +103,107 @@
 <p>Run example:</p>
 <pre><code>$ php main.php
 </code></pre>
+<h3>
+<a id="user-content-php-local-development-grpc-ssl-crud-example" class="anchor" href="#php-local-development-grpc-ssl-crud-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PHP Local Development gRPC SSL CRUD Example</h3>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-pse">&lt;?php</span><span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">require</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/vendor/autoload.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/GPBMetadata/Services.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/GrpcServicesClient.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/EmptyResponse.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/Hello.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/HelloResponse.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/Todo.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/ResetTodos.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/CreateTodo.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/CreateTodoResponse.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/GetTodo.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/GetTodoResponse.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/GetTodos.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/GetTodosResponse.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/UpdateTodo.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/UpdateTodoResponse.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/DeleteTodo.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/DeleteTodoResponse.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$client</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">TodoWorld\</span><span class="pl-c1">GrpcServicesClient</span>(<span class="pl-s"><span class="pl-pds">'</span>localhost:5001<span class="pl-pds">'</span></span>, [</span>
+<span class="pl-s1">    <span class="pl-s"><span class="pl-pds">'</span>credentials<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">Grpc\</span><span class="pl-c1">ChannelCredentials</span><span class="pl-k">::</span>createSsl(<span class="pl-c1">file_get_contents</span>(<span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>dev.crt<span class="pl-pds">'</span></span>)),</span>
+<span class="pl-s1">]);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">global</span> <span class="pl-smi">$client</span>;</span>
+<span class="pl-s1"><span class="pl-k">function</span> <span class="pl-en">client</span>() { <span class="pl-k">return</span> <span class="pl-smi">$GLOBALS</span>[<span class="pl-s"><span class="pl-pds">'</span>client<span class="pl-pds">'</span></span>]; }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">function</span> <span class="pl-en">assertStatus</span>(<span class="pl-smi">$status</span>)</span>
+<span class="pl-s1">{</span>
+<span class="pl-s1">    <span class="pl-k">if</span> (<span class="pl-smi">$status</span><span class="pl-k">-&gt;</span><span class="pl-smi">code</span> <span class="pl-k">!</span><span class="pl-k">==</span> <span class="pl-c1">Grpc\</span><span class="pl-c1">STATUS_OK</span>) {</span>
+<span class="pl-s1">        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>Call did not complete successfully. Status object:<span class="pl-cce">\n</span><span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">        <span class="pl-c1">var_dump</span>(<span class="pl-smi">$status</span>);</span>
+<span class="pl-s1">        <span class="pl-k">exit</span>(<span class="pl-c1">1</span>);</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">}</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">function</span> <span class="pl-en">hello</span>(<span class="pl-smi">$name</span>) </span>
+<span class="pl-s1">{</span>
+<span class="pl-s1">    <span class="pl-smi">$request</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">TodoWorld\</span><span class="pl-c1">Hello</span>();</span>
+<span class="pl-s1">    <span class="pl-smi">$request</span><span class="pl-k">-&gt;</span>setName(<span class="pl-smi">$name</span>);</span>
+<span class="pl-s1">    <span class="pl-c1">list</span>(<span class="pl-smi">$reply</span>, <span class="pl-smi">$status</span>) <span class="pl-k">=</span> client()<span class="pl-k">-&gt;</span>GetHello(<span class="pl-smi">$request</span>)<span class="pl-k">-&gt;</span>wait();</span>
+<span class="pl-s1">    assertStatus(<span class="pl-smi">$status</span>);</span>
+<span class="pl-s1">    <span class="pl-k">return</span> <span class="pl-smi">$reply</span><span class="pl-k">-&gt;</span>getResult();</span>
+<span class="pl-s1">}</span>
+<span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span> echo hello("World") . "\n";</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$reply</span>, <span class="pl-smi">$status</span>) <span class="pl-k">=</span> <span class="pl-smi">$client</span><span class="pl-k">-&gt;</span>PostResetTodos(<span class="pl-k">new</span> <span class="pl-c1">TodoWorld\</span><span class="pl-c1">ResetTodos</span>())<span class="pl-k">-&gt;</span>wait();</span>
+<span class="pl-s1">assertStatus(<span class="pl-smi">$status</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span>POST /todos</span></span>
+<span class="pl-s1"><span class="pl-smi">$request</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">TodoWorld\</span><span class="pl-c1">CreateTodo</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$request</span><span class="pl-k">-&gt;</span>setTitle(<span class="pl-s"><span class="pl-pds">"</span>ServiceStack<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$reply</span>, <span class="pl-smi">$status</span>) <span class="pl-k">=</span> <span class="pl-smi">$client</span><span class="pl-k">-&gt;</span>PostCreateTodo(<span class="pl-smi">$request</span>)<span class="pl-k">-&gt;</span>wait();</span>
+<span class="pl-s1">assertStatus(<span class="pl-smi">$status</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$todo</span> <span class="pl-k">=</span> <span class="pl-smi">$reply</span><span class="pl-k">-&gt;</span>getResult();</span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>new todo Id: <span class="pl-pds">"</span></span> <span class="pl-k">.</span> <span class="pl-smi">$todo</span><span class="pl-k">-&gt;</span>getId() <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">"</span>, Title: <span class="pl-pds">"</span></span> <span class="pl-k">.</span> <span class="pl-smi">$todo</span><span class="pl-k">-&gt;</span>getTitle() <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\n</span><span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span>GET /todos</span></span>
+<span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$reply</span>, <span class="pl-smi">$status</span>) <span class="pl-k">=</span> <span class="pl-smi">$client</span><span class="pl-k">-&gt;</span>CallGetTodos(<span class="pl-k">new</span> <span class="pl-c1">TodoWorld\</span><span class="pl-c1">GetTodos</span>())<span class="pl-k">-&gt;</span>wait();</span>
+<span class="pl-s1">assertStatus(<span class="pl-smi">$status</span>);</span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>todos: <span class="pl-pds">"</span></span> <span class="pl-k">.</span> <span class="pl-c1">count</span>(<span class="pl-smi">$reply</span><span class="pl-k">-&gt;</span>getResults())  <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\n</span><span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span>GET /todos/1</span></span>
+<span class="pl-s1"><span class="pl-smi">$request</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">TodoWorld\</span><span class="pl-c1">GetTodo</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$request</span><span class="pl-k">-&gt;</span>setId(<span class="pl-smi">$todo</span><span class="pl-k">-&gt;</span>getId());</span>
+<span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$reply</span>, <span class="pl-smi">$status</span>) <span class="pl-k">=</span> <span class="pl-smi">$client</span><span class="pl-k">-&gt;</span>CallGetTodo(<span class="pl-smi">$request</span>)<span class="pl-k">-&gt;</span>wait();</span>
+<span class="pl-s1">assertStatus(<span class="pl-smi">$status</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$todo</span> <span class="pl-k">=</span> <span class="pl-smi">$reply</span><span class="pl-k">-&gt;</span>getResult();</span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>get todo Id: <span class="pl-pds">"</span></span> <span class="pl-k">.</span> <span class="pl-smi">$todo</span><span class="pl-k">-&gt;</span>getId() <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">"</span>, Title: <span class="pl-pds">"</span></span> <span class="pl-k">.</span> <span class="pl-smi">$todo</span><span class="pl-k">-&gt;</span>getTitle() <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\n</span><span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span>PUT /todos/1</span></span>
+<span class="pl-s1"><span class="pl-smi">$request</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">TodoWorld\</span><span class="pl-c1">UpdateTodo</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$request</span><span class="pl-k">-&gt;</span>setId(<span class="pl-smi">$todo</span><span class="pl-k">-&gt;</span>getId());</span>
+<span class="pl-s1"><span class="pl-smi">$request</span><span class="pl-k">-&gt;</span>setTitle(<span class="pl-s"><span class="pl-pds">"</span>gRPC<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$reply</span>, <span class="pl-smi">$status</span>) <span class="pl-k">=</span> <span class="pl-smi">$client</span><span class="pl-k">-&gt;</span>PutUpdateTodo(<span class="pl-smi">$request</span>)<span class="pl-k">-&gt;</span>wait();</span>
+<span class="pl-s1">assertStatus(<span class="pl-smi">$status</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span>GET /todos/1</span></span>
+<span class="pl-s1"><span class="pl-smi">$request</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">TodoWorld\</span><span class="pl-c1">GetTodo</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$request</span><span class="pl-k">-&gt;</span>setId(<span class="pl-smi">$todo</span><span class="pl-k">-&gt;</span>getId());</span>
+<span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$reply</span>, <span class="pl-smi">$status</span>) <span class="pl-k">=</span> <span class="pl-smi">$client</span><span class="pl-k">-&gt;</span>CallGetTodo(<span class="pl-smi">$request</span>)<span class="pl-k">-&gt;</span>wait();</span>
+<span class="pl-s1">assertStatus(<span class="pl-smi">$status</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$todo</span> <span class="pl-k">=</span> <span class="pl-smi">$reply</span><span class="pl-k">-&gt;</span>getResult();</span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>get todo Id: <span class="pl-pds">"</span></span> <span class="pl-k">.</span> <span class="pl-smi">$todo</span><span class="pl-k">-&gt;</span>getId() <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">"</span>, Title: <span class="pl-pds">"</span></span> <span class="pl-k">.</span> <span class="pl-smi">$todo</span><span class="pl-k">-&gt;</span>getTitle() <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\n</span><span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span>DELETE /todos/1</span></span>
+<span class="pl-s1"><span class="pl-smi">$request</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">TodoWorld\</span><span class="pl-c1">DeleteTodo</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$request</span><span class="pl-k">-&gt;</span>setId(<span class="pl-smi">$todo</span><span class="pl-k">-&gt;</span>getId());</span>
+<span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$reply</span>, <span class="pl-smi">$status</span>) <span class="pl-k">=</span> <span class="pl-smi">$client</span><span class="pl-k">-&gt;</span>CallDeleteTodo(<span class="pl-smi">$request</span>)<span class="pl-k">-&gt;</span>wait();</span>
+<span class="pl-s1">assertStatus(<span class="pl-smi">$status</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c"><span class="pl-c">//</span>GET /todos</span></span>
+<span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$reply</span>, <span class="pl-smi">$status</span>) <span class="pl-k">=</span> <span class="pl-smi">$client</span><span class="pl-k">-&gt;</span>CallGetTodos(<span class="pl-k">new</span> <span class="pl-c1">TodoWorld\</span><span class="pl-c1">GetTodos</span>())<span class="pl-k">-&gt;</span>wait();</span>
+<span class="pl-s1">assertStatus(<span class="pl-smi">$status</span>);</span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>todos: <span class="pl-pds">"</span></span> <span class="pl-k">.</span> <span class="pl-c1">count</span>(<span class="pl-smi">$reply</span><span class="pl-k">-&gt;</span>getResults())  <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\n</span><span class="pl-pds">"</span></span>;</span></pre></div>
+<p>Refer to <a href="https://github.com/NetCoreApps/todo-world/tree/master/src/clients/php">/src/clients/php</a>
+for a complete example project.</p>
 </div>

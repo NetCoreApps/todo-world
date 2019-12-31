@@ -3,6 +3,35 @@ window.TODOS = {{ 'GetTodos' |> execService |> get('Results') |> json }};
 {{/script}}
 
 {{#raw}}
+<div id="sidebar" class="effect6">
+    <div class="inner" style="padding: 1em">
+        <h4>gRPC Smart Clients</h4>
+        <ul>
+            <li><a href="#csharp-generic">C#</a></li>
+            <li><a href="#vb-generic">VB.NET</a></li>
+            <li><a href="#fsharp-generic">F#</a></li>
+        </ul>
+        <h4>gRPC protoc Clients</h4>
+        <ul>
+            <li><a href="#csharp">C#</a></li>
+            <li><a href="#swift">Swift</a></li>
+            <li><a href="#java">Java</a></li>
+            <li><a href="#dart">Dart</a></li>
+            <li><a href="#go">Go</a></li>
+            <li><a href="#node">Node</a></li>
+            <li><a href="#python">Python</a></li>
+            <li><a href="#ruby">Ruby</a></li>
+            <li><a href="#php">PHP</a></li>
+        </ul>
+        <h4>gRPC Web</h4>
+        <ul>
+            <li><a href="#grpc-web">TypeScript</a></li>
+            <li><a href="#grpc-web">Closure</a></li>
+            <li><a href="#grpc-web">Common JS</a></li>
+        </ul>
+    </div>
+</div>
+
 <div class="container app">
 <div id="app">
 <section class="todoapp">
@@ -101,7 +130,12 @@ window.TODOS = {{ 'GetTodos' |> execService |> get('Results') |> json }};
                     {{ 'gfm/fsharp-generic.md' |> githubMarkdown }}
                 </div>
             </div>
+
+            <p class="grpc-docs">
+                Visit <a href="https://docs.servicestack.net/grpc">ServiceStack gRPC docs</a> for more info.
+            </p>
         </div>
+        
     </div>
 </div>
 
@@ -111,6 +145,7 @@ window.TODOS = {{ 'GetTodos' |> execService |> get('Results') |> json }};
     <a name="java"></a>
     <a name="dart"></a>
     <a name="go"></a>
+    <a name="node"></a>
     <a name="python"></a>
     <a name="ruby"></a>
     <a name="php"></a>
@@ -189,10 +224,27 @@ window.TODOS = {{ 'GetTodos' |> execService |> get('Results') |> json }};
                     {{ 'gfm/php.md' |> githubMarkdown }}
                 </div>
             </div>
+
+            <p class="grpc-docs">
+                Visit <a href="https://docs.servicestack.net/grpc">ServiceStack gRPC docs</a> for more info.
+            </p>
         </div>
     </div>
 </div>
 
+
+<div class="container">
+    <a name="grpc-web"></a>
+    <div class="row grpc">
+        <h2>gRPC Web</h2>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        {{ 'gfm/grpc-web.md' |> githubMarkdown }}
+    </div>
+</div>
 
 {{#raw appendTo scripts}}
 

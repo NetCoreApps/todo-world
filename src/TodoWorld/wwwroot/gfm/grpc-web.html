@@ -1,0 +1,23 @@
+<div class="gfm"><p>As it's <a href="https://grpc.io/blog/state-of-grpc-web/" rel="nofollow">impossible to implement the HTTP/2 gRPC spec in the browser</a>,
+in order to be able to consume gRPC services from a browser a <a href="https://grpc.io/blog/state-of-grpc-web/#the-tech" rel="nofollow">gRPC Web Proxy</a> is needed.</p>
+<p>The current recommendation from the gRPC Web team is to use the
+<a href="https://grpc.io/docs/tutorials/basic/web/#configure-the-envoy-proxy" rel="nofollow">Configure the Envoy Proxy</a> to forward
+the gRPC browser request to the native gRPC endpoint, however as it adds more moving parts and
+additional complexity, if you're not already using envoyproxy we instead recommended using
+ServiceStack HTTP JSON Services, made possible since ServiceStack's gRPC
+Service implementations are also made available over REST-ful HTTP APIs - i.e. the lingua franca of the web.</p>
+<p>If <a href="https://github.com/grpc/grpc-dotnet/issues/99">ASP.NET Core adds native gRPC Web support</a> then using gRPC
+clients may provide a more appealing option although it wont have a clean, versatile and rich API as
+<a href="https://docs.servicestack.net/typescript-add-servicestack-reference" rel="nofollow">TypeScript Add ServiceStack Reference</a>.</p>
+<h3>
+<a id="user-content-x-dotnet-tool-grpc-web-support" class="anchor" href="#x-dotnet-tool-grpc-web-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>x dotnet tool gRPC Web support</h3>
+<p>If wanting to evaluate using a gRPC Web Proxy you can use generate different TypeScript and JavaScript clients
+using the commands below:</p>
+<pre><code>$ x proto-ts &lt;url&gt;             # TypeScript + gRPC Web Text
+$ x proto-ts-binary &lt;url&gt;      # TypeScript + gRPC Web Binary
+$ x proto-js-closure &lt;url&gt;     # Google Closure + gRPC Web Text
+$ x proto-js-commonjs &lt;url&gt;    # Common JS + gRPC Web Text
+</code></pre>
+<p>Or if preferred you can use the online UI or HTTP API for generating Protocol Buffers and gRPC client proxies at
+<a href="https://grpc.servicestack.net" rel="nofollow">grpc.servicestack.net</a>.</p>
+</div>

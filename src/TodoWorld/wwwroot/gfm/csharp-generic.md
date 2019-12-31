@@ -87,7 +87,7 @@ Run example:
 
     $ dotnet run
 
-### C# gRPC SSL Local Development CRUD Example
+### C# Local Development gRPC SSL CRUD Example
 
 ```csharp
 using System.Threading.Tasks;
@@ -101,7 +101,7 @@ namespace CSharpGeneric
     {
         public static async Task Main(string[] args)
         {
-            // When using trusted local development certificate, certificate registration not required 
+            // Certificate registration not required when using trusted local development certificate  
             var client = new GrpcServiceClient("https://localhost:5001");
             await client.PostAsync(new ResetTodos());
 
@@ -139,3 +139,5 @@ namespace CSharpGeneric
 }
 ```
 
+Refer to [/src/clients/csharp-generic](https://github.com/NetCoreApps/todo-world/tree/master/src/clients/csharp-generic)
+for a complete example project.

@@ -105,4 +105,91 @@
 <p>Run example:</p>
 <pre><code>$ node --no-deprecation index.js
 </code></pre>
+<h3>
+<a id="user-content-nodejs-local-development-grpc-ssl-crud-example" class="anchor" href="#nodejs-local-development-grpc-ssl-crud-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Node.js Local Development gRPC SSL CRUD Example</h3>
+<div class="highlight highlight-source-js"><pre><span class="pl-k">const</span> { 
+    ResetTodos,
+    CreateTodo,
+    GetTodo,
+    GetTodos,
+    UpdateTodo,
+    DeleteTodo,
+} <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>./services_pb.js<span class="pl-pds">'</span></span>);
+
+<span class="pl-k">const</span> { <span class="pl-c1">GrpcServicesClient</span> } <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>./services_grpc_pb.js<span class="pl-pds">'</span></span>);
+
+<span class="pl-k">const</span> <span class="pl-c1">grpc</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>grpc<span class="pl-pds">'</span></span>);
+
+<span class="pl-k">const</span> { <span class="pl-c1">promisify</span> } <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>util<span class="pl-pds">'</span></span>);
+<span class="pl-k">const</span> <span class="pl-c1">fs</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>fs<span class="pl-pds">'</span></span>);
+
+<span class="pl-k">async</span> <span class="pl-k">function</span> <span class="pl-en">main</span>() {
+
+    <span class="pl-k">const</span> <span class="pl-c1">client</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">GrpcServicesClient</span>(<span class="pl-s"><span class="pl-pds">'</span>localhost:5001<span class="pl-pds">'</span></span>, 
+        <span class="pl-smi">grpc</span>.<span class="pl-smi">credentials</span>.<span class="pl-en">createSsl</span>(<span class="pl-smi">fs</span>.<span class="pl-en">readFileSync</span>(<span class="pl-s"><span class="pl-pds">'</span>../certs/dev.crt<span class="pl-pds">'</span></span>)));
+    
+    <span class="pl-c"><span class="pl-c">//</span> Convert gRPC's callback APIs to await friendly promises</span>
+    <span class="pl-k">const</span> { 
+        postResetTodos,
+        postCreateTodo,
+        callGetTodos,
+        callGetTodo,
+        putUpdateTodo,
+        callDeleteTodo,
+    } <span class="pl-k">=</span> <span class="pl-en">promisifyAll</span>(client);
+
+    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">'</span>TODO EXAMPLE<span class="pl-pds">'</span></span>);
+    <span class="pl-k">await</span> <span class="pl-en">postResetTodos</span>(<span class="pl-k">new</span> <span class="pl-en">ResetTodos</span>());
+
+    <span class="pl-c"><span class="pl-c">//</span>POST /todos</span>
+    request <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">CreateTodo</span>();
+    <span class="pl-smi">request</span>.<span class="pl-en">setTitle</span>(<span class="pl-s"><span class="pl-pds">'</span>ServiceStack<span class="pl-pds">'</span></span>);
+    <span class="pl-k">var</span> todo <span class="pl-k">=</span> (<span class="pl-k">await</span> <span class="pl-en">postCreateTodo</span>(request)).<span class="pl-en">getResult</span>();
+    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">`</span>new todo Id: <span class="pl-s1"><span class="pl-pse">${</span><span class="pl-smi">todo</span>.<span class="pl-en">getId</span>()<span class="pl-pse">}</span></span>, Title: <span class="pl-s1"><span class="pl-pse">${</span><span class="pl-smi">todo</span>.<span class="pl-en">getTitle</span>()<span class="pl-pse">}</span></span><span class="pl-pds">`</span></span>);
+
+    <span class="pl-c"><span class="pl-c">//</span>GET /todos</span>
+    <span class="pl-k">var</span> all <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-en">callGetTodos</span>(<span class="pl-k">new</span> <span class="pl-en">GetTodos</span>());
+    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">`</span>todos: <span class="pl-s1"><span class="pl-pse">${</span><span class="pl-smi">all</span>.<span class="pl-en">getResultsList</span>().<span class="pl-c1">length</span><span class="pl-pse">}</span></span><span class="pl-pds">`</span></span>);
+
+    <span class="pl-c"><span class="pl-c">//</span>GET /todos/1</span>
+    request <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">GetTodo</span>();
+    <span class="pl-smi">request</span>.<span class="pl-en">setId</span>(<span class="pl-smi">todo</span>.<span class="pl-en">getId</span>());
+    todo <span class="pl-k">=</span> (<span class="pl-k">await</span> <span class="pl-en">callGetTodo</span>(request)).<span class="pl-en">getResult</span>();
+    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">`</span>get todo Id: <span class="pl-s1"><span class="pl-pse">${</span><span class="pl-smi">todo</span>.<span class="pl-en">getId</span>()<span class="pl-pse">}</span></span>, Title: <span class="pl-s1"><span class="pl-pse">${</span><span class="pl-smi">todo</span>.<span class="pl-en">getTitle</span>()<span class="pl-pse">}</span></span><span class="pl-pds">`</span></span>);
+
+    <span class="pl-c"><span class="pl-c">//</span>PUT /todos/1</span>
+    request <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">UpdateTodo</span>();
+    <span class="pl-smi">request</span>.<span class="pl-en">setId</span>(<span class="pl-smi">todo</span>.<span class="pl-en">getId</span>());
+    <span class="pl-smi">request</span>.<span class="pl-en">setTitle</span>(<span class="pl-s"><span class="pl-pds">'</span>gRPC<span class="pl-pds">'</span></span>);
+    <span class="pl-k">await</span> <span class="pl-en">putUpdateTodo</span>(request);
+
+    <span class="pl-c"><span class="pl-c">//</span>GET /todos/1</span>
+    request <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">GetTodo</span>();
+    <span class="pl-smi">request</span>.<span class="pl-en">setId</span>(<span class="pl-smi">todo</span>.<span class="pl-en">getId</span>());
+    todo <span class="pl-k">=</span> (<span class="pl-k">await</span> <span class="pl-en">callGetTodo</span>(request)).<span class="pl-en">getResult</span>();
+    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">`</span>get todo Id: <span class="pl-s1"><span class="pl-pse">${</span><span class="pl-smi">todo</span>.<span class="pl-en">getId</span>()<span class="pl-pse">}</span></span>, Title: <span class="pl-s1"><span class="pl-pse">${</span><span class="pl-smi">todo</span>.<span class="pl-en">getTitle</span>()<span class="pl-pse">}</span></span><span class="pl-pds">`</span></span>);
+
+    <span class="pl-c"><span class="pl-c">//</span>DELETE /todos/1</span>
+    request <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">DeleteTodo</span>();
+    <span class="pl-smi">request</span>.<span class="pl-en">setId</span>(<span class="pl-smi">todo</span>.<span class="pl-en">getId</span>());
+    <span class="pl-k">await</span> <span class="pl-en">callDeleteTodo</span>(request);
+
+    <span class="pl-c"><span class="pl-c">//</span>GET /todos</span>
+    all <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-en">callGetTodos</span>(<span class="pl-k">new</span> <span class="pl-en">GetTodos</span>());
+    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-s"><span class="pl-pds">`</span>todos: <span class="pl-s1"><span class="pl-pse">${</span><span class="pl-smi">all</span>.<span class="pl-en">getResultsList</span>().<span class="pl-c1">length</span><span class="pl-pse">}</span></span><span class="pl-pds">`</span></span>);
+}
+
+<span class="pl-c"><span class="pl-c">//</span> Necessary until gRPC provides a native async friendly solution https://github.com/grpc/grpc-node/issues/54</span>
+<span class="pl-k">function</span> <span class="pl-en">promisifyAll</span>(<span class="pl-smi">client</span>) {
+    <span class="pl-k">const</span> <span class="pl-c1">to</span> <span class="pl-k">=</span> {};
+    <span class="pl-k">for</span> (<span class="pl-k">var</span> k <span class="pl-k">in</span> client) {
+        <span class="pl-k">if</span> (<span class="pl-k">typeof</span> client[k] <span class="pl-k">!=</span> <span class="pl-s"><span class="pl-pds">'</span>function<span class="pl-pds">'</span></span>) <span class="pl-k">continue</span>;
+        to[k] <span class="pl-k">=</span> <span class="pl-en">promisify</span>(client[k].<span class="pl-en">bind</span>(client));
+    }
+    <span class="pl-k">return</span> to;
+}
+
+<span class="pl-en">main</span>();</pre></div>
+<p>Refer to <a href="https://github.com/NetCoreApps/todo-world/tree/master/src/clients/js-node">/src/clients/js-node</a>
+for a complete example project.</p>
 </div>

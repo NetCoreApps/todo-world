@@ -98,4 +98,65 @@ $ x proto-swift https://todoworld.servicestack.net
 <p>Run example:</p>
 <pre><code>$ swift run
 </code></pre>
+<h3>
+<a id="user-content-swift-local-development-grpc-ssl-crud-example" class="anchor" href="#swift-local-development-grpc-ssl-crud-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Swift Local Development gRPC SSL CRUD Example</h3>
+<div class="highlight highlight-source-swift"><pre><span class="pl-k">import</span> <span class="pl-en">Foundation</span>
+<span class="pl-k">import</span> <span class="pl-en">GRPC</span>
+<span class="pl-k">import</span> <span class="pl-en">NIO</span>
+<span class="pl-k">import</span> <span class="pl-en">NIOSSL</span>
+
+<span class="pl-k">do</span> {
+
+    <span class="pl-k">let</span> configuration <span class="pl-k">=</span> ClientConnection.<span class="pl-c1">Configuration</span>(
+        <span class="pl-c1">target</span>: .<span class="pl-c1">hostAndPort</span>(<span class="pl-s"><span class="pl-pds">"</span>localhost<span class="pl-pds">"</span></span>, <span class="pl-c1">5001</span>),
+        <span class="pl-c1">eventLoopGroup</span>: <span class="pl-c1">MultiThreadedEventLoopGroup</span>(<span class="pl-c1">numberOfThreads</span>: <span class="pl-c1">1</span>),
+        <span class="pl-c1">tls</span>: .<span class="pl-k">init</span>(<span class="pl-c1">certificateChain</span>: <span class="pl-k">try</span> NIOSSLCertificate.<span class="pl-c1">fromPEMFile</span>(<span class="pl-s"><span class="pl-pds">"</span>dev.crt<span class="pl-pds">"</span></span>).<span class="pl-c1">map</span> { .<span class="pl-c1">certificate</span>(<span class="pl-c1">$0</span>) })
+    )
+
+    <span class="pl-k">let</span> client <span class="pl-k">=</span> <span class="pl-c1">GrpcServicesServiceClient</span>(<span class="pl-c1">connection</span>: <span class="pl-c1">ClientConnection</span>(<span class="pl-c1">configuration</span>: configuration))
+
+    <span class="pl-c1">print</span>(<span class="pl-s"><span class="pl-pds">"</span>TODO EXAMPLE<span class="pl-pds">"</span></span>)
+
+    <span class="pl-c1">_</span> <span class="pl-k">=</span> <span class="pl-k">try</span> client.<span class="pl-c1">postResetTodos</span>(<span class="pl-c1">ResetTodos</span>()).<span class="pl-smi">response</span>.<span class="pl-c1">wait</span>()
+
+    <span class="pl-c"><span class="pl-c">//</span>POST /todos</span>
+<span class="pl-c"></span>    <span class="pl-k">var</span> createTodo <span class="pl-k">=</span> <span class="pl-c1">CreateTodo</span>()
+    createTodo.<span class="pl-smi">title</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>ServiceStack<span class="pl-pds">"</span></span>
+    <span class="pl-k">var</span> todo <span class="pl-k">=</span> <span class="pl-k">try</span> client.<span class="pl-c1">postCreateTodo</span>(createTodo).<span class="pl-smi">response</span>.<span class="pl-c1">wait</span>().<span class="pl-smi">result</span>
+    <span class="pl-c1">print</span>(<span class="pl-s"><span class="pl-pds">"</span>new todo Id: <span class="pl-pse">\(</span><span class="pl-s1">todo.<span class="pl-smi">id</span></span><span class="pl-pse"><span class="pl-s1">)</span></span>, Title: <span class="pl-pse">\(</span><span class="pl-s1">todo.<span class="pl-smi">title</span></span><span class="pl-pse"><span class="pl-s1">)</span></span><span class="pl-pds">"</span></span>)
+
+    <span class="pl-c"><span class="pl-c">//</span>GET /todos</span>
+<span class="pl-c"></span>    <span class="pl-k">var</span> all <span class="pl-k">=</span> <span class="pl-k">try</span> client.<span class="pl-c1">callGetTodos</span>(<span class="pl-c1">GetTodos</span>()).<span class="pl-smi">response</span>.<span class="pl-c1">wait</span>()
+    <span class="pl-c1">print</span>(<span class="pl-s"><span class="pl-pds">"</span>todos: <span class="pl-pse">\(</span><span class="pl-s1">all.<span class="pl-smi">results</span>.<span class="pl-c1">count</span></span><span class="pl-pse"><span class="pl-s1">)</span></span><span class="pl-pds">"</span></span>)
+
+    <span class="pl-c"><span class="pl-c">//</span>GET /todos/1</span>
+<span class="pl-c"></span>    <span class="pl-k">var</span> getTodo <span class="pl-k">=</span> <span class="pl-c1">GetTodo</span>()
+    getTodo.<span class="pl-smi">id</span> <span class="pl-k">=</span> todo.<span class="pl-smi">id</span>
+    todo <span class="pl-k">=</span> <span class="pl-k">try</span> client.<span class="pl-c1">callGetTodo</span>(getTodo).<span class="pl-smi">response</span>.<span class="pl-c1">wait</span>().<span class="pl-smi">result</span>
+    <span class="pl-c1">print</span>(<span class="pl-s"><span class="pl-pds">"</span>get todo Id: <span class="pl-pse">\(</span><span class="pl-s1">todo.<span class="pl-smi">id</span></span><span class="pl-pse"><span class="pl-s1">)</span></span>, Title: <span class="pl-pse">\(</span><span class="pl-s1">todo.<span class="pl-smi">title</span></span><span class="pl-pse"><span class="pl-s1">)</span></span><span class="pl-pds">"</span></span>)
+
+    <span class="pl-c"><span class="pl-c">//</span>PUT /todos/1</span>
+<span class="pl-c"></span>    <span class="pl-k">var</span> updateTodo <span class="pl-k">=</span> <span class="pl-c1">UpdateTodo</span>()
+    updateTodo.<span class="pl-smi">id</span> <span class="pl-k">=</span> todo.<span class="pl-smi">id</span>
+    updateTodo.<span class="pl-smi">title</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>gRPC<span class="pl-pds">"</span></span>
+    <span class="pl-c1">_</span> <span class="pl-k">=</span> <span class="pl-k">try</span> client.<span class="pl-c1">putUpdateTodo</span>(updateTodo).<span class="pl-smi">response</span>.<span class="pl-c1">wait</span>()
+
+    <span class="pl-c"><span class="pl-c">//</span>GET /todos/1</span>
+<span class="pl-c"></span>    todo <span class="pl-k">=</span> <span class="pl-k">try</span> client.<span class="pl-c1">callGetTodo</span>(getTodo).<span class="pl-smi">response</span>.<span class="pl-c1">wait</span>().<span class="pl-smi">result</span>
+    <span class="pl-c1">print</span>(<span class="pl-s"><span class="pl-pds">"</span>get todo Id: <span class="pl-pse">\(</span><span class="pl-s1">todo.<span class="pl-smi">id</span></span><span class="pl-pse"><span class="pl-s1">)</span></span>, Title: <span class="pl-pse">\(</span><span class="pl-s1">todo.<span class="pl-smi">title</span></span><span class="pl-pse"><span class="pl-s1">)</span></span><span class="pl-pds">"</span></span>)
+
+    <span class="pl-c"><span class="pl-c">//</span>DELETE /todos/1</span>
+<span class="pl-c"></span>    <span class="pl-k">var</span> deleteTodo <span class="pl-k">=</span> <span class="pl-c1">DeleteTodo</span>()
+    deleteTodo.<span class="pl-smi">id</span> <span class="pl-k">=</span> todo.<span class="pl-smi">id</span>
+    <span class="pl-c1">_</span> <span class="pl-k">=</span> <span class="pl-k">try</span> client.<span class="pl-c1">callDeleteTodo</span>(deleteTodo).<span class="pl-smi">response</span>.<span class="pl-c1">wait</span>()
+
+    <span class="pl-c"><span class="pl-c">//</span>GET /todos</span>
+<span class="pl-c"></span>    all <span class="pl-k">=</span> <span class="pl-k">try</span> client.<span class="pl-c1">callGetTodos</span>(<span class="pl-c1">GetTodos</span>()).<span class="pl-smi">response</span>.<span class="pl-c1">wait</span>()
+    <span class="pl-c1">print</span>(<span class="pl-s"><span class="pl-pds">"</span>todos: <span class="pl-pse">\(</span><span class="pl-s1">all.<span class="pl-smi">results</span>.<span class="pl-c1">count</span></span><span class="pl-pse"><span class="pl-s1">)</span></span><span class="pl-pds">"</span></span>)
+
+} <span class="pl-k">catch</span> {
+    <span class="pl-c1">print</span>(<span class="pl-s"><span class="pl-pds">"</span>ERROR<span class="pl-cce">\n</span><span class="pl-pse">\(</span><span class="pl-s1">error</span><span class="pl-pse"><span class="pl-s1">)</span></span><span class="pl-pds">"</span></span>)
+}</pre></div>
+<p>Refer to <a href="https://github.com/NetCoreApps/todo-world/tree/master/src/clients/swift">/src/clients/swift</a>
+for a complete example project.</p>
 </div>

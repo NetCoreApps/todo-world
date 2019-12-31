@@ -94,4 +94,54 @@ main</pre></div>
 <p>Run example:</p>
 <pre><code>$ ruby main.rb
 </code></pre>
+<h3>
+<a id="user-content-ruby-local-development-grpc-ssl-crud-example" class="anchor" href="#ruby-local-development-grpc-ssl-crud-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ruby Local Development gRPC SSL CRUD Example</h3>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c"><span class="pl-c">#</span>!/usr/bin/env ruby</span>
+
+this_dir <span class="pl-k">=</span> <span class="pl-c1">File</span>.expand_path(<span class="pl-c1">File</span>.dirname(<span class="pl-c1">__FILE__</span>))
+lib_dir <span class="pl-k">=</span> <span class="pl-c1">File</span>.join(this_dir, <span class="pl-s"><span class="pl-pds">'</span>lib<span class="pl-pds">'</span></span>)
+<span class="pl-smi">$LOAD_PATH</span>.unshift(lib_dir) <span class="pl-k">unless</span> <span class="pl-smi">$LOAD_PATH</span>.include?(lib_dir)
+
+<span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>grpc<span class="pl-pds">'</span></span>
+<span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>services_pb<span class="pl-pds">'</span></span>
+<span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>services_services_pb<span class="pl-pds">'</span></span>
+
+<span class="pl-k">def</span> <span class="pl-en">main</span>
+    credentials <span class="pl-k">=</span> <span class="pl-c1">GRPC</span>::<span class="pl-c1">Core</span>::<span class="pl-c1">ChannelCredentials</span>.<span class="pl-k">new</span>(<span class="pl-c1">File</span>.read(<span class="pl-s"><span class="pl-pds">'</span>dev.crt<span class="pl-pds">'</span></span>))
+    client <span class="pl-k">=</span> <span class="pl-c1">GrpcServices</span>::<span class="pl-c1">Stub</span>.<span class="pl-k">new</span>(<span class="pl-s"><span class="pl-pds">'</span>localhost:5001<span class="pl-pds">'</span></span>, credentials)
+    client.post_reset_todos(<span class="pl-c1">ResetTodos</span>.<span class="pl-k">new</span>())
+
+    <span class="pl-c1">puts</span> <span class="pl-s"><span class="pl-pds">"</span>TODO EXAMPLE<span class="pl-pds">"</span></span>
+
+    <span class="pl-c"><span class="pl-c">#</span> POST /todos</span>
+    todo <span class="pl-k">=</span> client.post_create_todo(<span class="pl-c1">CreateTodo</span>.<span class="pl-k">new</span>(<span class="pl-c1">Title:</span><span class="pl-s"><span class="pl-pds">"</span>ServiceStack<span class="pl-pds">"</span></span>)).<span class="pl-c1">Result</span>
+    <span class="pl-c1">puts</span> <span class="pl-s"><span class="pl-pds">"</span>new todo Id: <span class="pl-pse">#{</span><span class="pl-s1">todo.<span class="pl-c1">Id</span></span><span class="pl-pse">}</span>, Title: <span class="pl-pse">#{</span><span class="pl-s1">todo.<span class="pl-c1">Title</span></span><span class="pl-pse">}</span><span class="pl-pds">"</span></span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> GET /todos</span>
+    all <span class="pl-k">=</span> client.call_get_todos(<span class="pl-c1">GetTodos</span>.<span class="pl-k">new</span>())
+    <span class="pl-c1">puts</span> <span class="pl-s"><span class="pl-pds">"</span>todos: <span class="pl-pse">#{</span><span class="pl-s1">all.<span class="pl-c1">Results</span>.length</span><span class="pl-pse">}</span><span class="pl-pds">"</span></span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> GET /todos/1</span>
+    todo <span class="pl-k">=</span> (client.call_get_todo(<span class="pl-c1">GetTodo</span>.<span class="pl-k">new</span>(<span class="pl-c1">Id:</span>todo.<span class="pl-c1">Id</span>))).<span class="pl-c1">Result</span>
+    <span class="pl-c1">puts</span> <span class="pl-s"><span class="pl-pds">"</span>get todo Id: <span class="pl-pse">#{</span><span class="pl-s1">todo.<span class="pl-c1">Id</span></span><span class="pl-pse">}</span>, Title: <span class="pl-pse">#{</span><span class="pl-s1">todo.<span class="pl-c1">Title</span></span><span class="pl-pse">}</span><span class="pl-pds">"</span></span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> PUT /todos/1</span>
+    client.put_update_todo(<span class="pl-c1">UpdateTodo</span>.<span class="pl-k">new</span>(<span class="pl-c1">Id:</span>todo.<span class="pl-c1">Id</span>, <span class="pl-c1">Title:</span><span class="pl-s"><span class="pl-pds">'</span>gRPC<span class="pl-pds">'</span></span>))
+    
+    <span class="pl-c"><span class="pl-c">#</span> GET /todos/1</span>
+    todo <span class="pl-k">=</span> (client.call_get_todo(<span class="pl-c1">GetTodo</span>.<span class="pl-k">new</span>(<span class="pl-c1">Id:</span>todo.<span class="pl-c1">Id</span>))).<span class="pl-c1">Result</span>
+    <span class="pl-c1">puts</span> <span class="pl-s"><span class="pl-pds">"</span>get todo Id: <span class="pl-pse">#{</span><span class="pl-s1">todo.<span class="pl-c1">Id</span></span><span class="pl-pse">}</span>, Title: <span class="pl-pse">#{</span><span class="pl-s1">todo.<span class="pl-c1">Title</span></span><span class="pl-pse">}</span><span class="pl-pds">"</span></span>
+    
+    <span class="pl-c"><span class="pl-c">#</span> DELETE /todos/1</span>
+    client.call_delete_todo(<span class="pl-c1">DeleteTodo</span>.<span class="pl-k">new</span>(<span class="pl-c1">Id:</span>todo.<span class="pl-c1">Id</span>))
+    
+    <span class="pl-c"><span class="pl-c">#</span> GET /todos</span>
+    all <span class="pl-k">=</span> client.call_get_todos(<span class="pl-c1">GetTodos</span>.<span class="pl-k">new</span>())
+    <span class="pl-c1">puts</span> <span class="pl-s"><span class="pl-pds">"</span>todos: <span class="pl-pse">#{</span><span class="pl-s1">all.<span class="pl-c1">Results</span>.length</span><span class="pl-pse">}</span><span class="pl-pds">"</span></span>
+    
+<span class="pl-k">end</span>
+
+main</pre></div>
+<p>Refer to <a href="https://github.com/NetCoreApps/todo-world/tree/master/src/clients/ruby">/src/clients/ruby</a>
+for a complete example project.</p>
 </div>

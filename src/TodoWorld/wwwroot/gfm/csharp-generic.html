@@ -71,4 +71,55 @@
 <p>Run example:</p>
 <pre><code>$ dotnet run
 </code></pre>
+<h3>
+<a id="user-content-c-local-development-grpc-ssl-crud-example" class="anchor" href="#c-local-development-grpc-ssl-crud-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>C# Local Development gRPC SSL CRUD Example</h3>
+<div class="highlight highlight-source-cs"><pre><span class="pl-k">using</span> <span class="pl-en">System</span>.<span class="pl-en">Threading</span>.<span class="pl-en">Tasks</span>;
+<span class="pl-k">using</span> <span class="pl-en">ServiceStack</span>;
+<span class="pl-k">using</span> <span class="pl-en">ServiceStack</span>.<span class="pl-en">Text</span>;
+<span class="pl-k">using</span> <span class="pl-en">TodoWorld</span>.<span class="pl-en">ServiceModel</span>;
+
+<span class="pl-k">namespace</span> <span class="pl-en">CSharpGeneric</span>
+{
+    <span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">Program</span>
+    {
+        <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">async</span> <span class="pl-en">Task</span> <span class="pl-en">Main</span>(<span class="pl-k">string</span>[] <span class="pl-smi">args</span>)
+        {
+            <span class="pl-c"><span class="pl-c">//</span> Certificate registration not required when using trusted local development certificate  </span>
+            <span class="pl-k">var</span> <span class="pl-smi">client</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">GrpcServiceClient</span>(<span class="pl-s"><span class="pl-pds">"</span>https://localhost:5001<span class="pl-pds">"</span></span>);
+            <span class="pl-k">await</span> <span class="pl-smi">client</span>.<span class="pl-en">PostAsync</span>(<span class="pl-k">new</span> <span class="pl-en">ResetTodos</span>());
+
+            <span class="pl-c"><span class="pl-c">//</span>POST /todos</span>
+            <span class="pl-k">var</span> <span class="pl-smi">todo</span> <span class="pl-k">=</span> (<span class="pl-k">await</span> <span class="pl-smi">client</span>.<span class="pl-en">PostAsync</span>(<span class="pl-k">new</span> <span class="pl-en">CreateTodo</span> { <span class="pl-smi">Title</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>ServiceStack<span class="pl-pds">"</span></span> })).<span class="pl-smi">Result</span>;
+            <span class="pl-s"><span class="pl-pds">$"</span>new todo Id: {<span class="pl-smi">todo</span>.<span class="pl-smi">Id</span>}, Title: {<span class="pl-smi">todo</span>.<span class="pl-smi">Title</span>}<span class="pl-pds">"</span></span>.<span class="pl-en">Print</span>();
+            
+            <span class="pl-c"><span class="pl-c">//</span>GET /todos</span>
+            <span class="pl-k">var</span> <span class="pl-smi">all</span> <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-smi">client</span>.<span class="pl-en">GetAsync</span>(<span class="pl-k">new</span> <span class="pl-en">GetTodos</span>());
+            <span class="pl-s"><span class="pl-pds">$"</span>todos: {<span class="pl-smi">all</span>.<span class="pl-smi">Results</span><span class="pl-k">?</span>.<span class="pl-smi">Count</span> <span class="pl-k">??</span> <span class="pl-c1">0</span>}<span class="pl-pds">"</span></span>.<span class="pl-en">Print</span>();
+
+            <span class="pl-c"><span class="pl-c">//</span>GET /todos/1</span>
+            <span class="pl-smi">todo</span> <span class="pl-k">=</span> (<span class="pl-k">await</span> <span class="pl-smi">client</span>.<span class="pl-en">GetAsync</span>(<span class="pl-k">new</span> <span class="pl-en">GetTodo</span> { <span class="pl-smi">Id</span> <span class="pl-k">=</span> <span class="pl-smi">todo</span>.<span class="pl-smi">Id</span> })).<span class="pl-smi">Result</span>;
+            <span class="pl-s"><span class="pl-pds">$"</span>get todo Id: {<span class="pl-smi">todo</span>.<span class="pl-smi">Id</span>}, Title: {<span class="pl-smi">todo</span>.<span class="pl-smi">Title</span>}<span class="pl-pds">"</span></span>.<span class="pl-en">Print</span>();
+
+            <span class="pl-c"><span class="pl-c">//</span>GET /todos</span>
+            <span class="pl-smi">all</span> <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-smi">client</span>.<span class="pl-en">GetAsync</span>(<span class="pl-k">new</span> <span class="pl-en">GetTodos</span>());
+            <span class="pl-s"><span class="pl-pds">$"</span>todos: {<span class="pl-smi">all</span>.<span class="pl-smi">Results</span><span class="pl-k">?</span>.<span class="pl-smi">Count</span> <span class="pl-k">??</span> <span class="pl-c1">0</span>}<span class="pl-pds">"</span></span>.<span class="pl-en">Print</span>();
+
+            <span class="pl-c"><span class="pl-c">//</span>PUT /todos/1</span>
+            <span class="pl-k">await</span> <span class="pl-smi">client</span>.<span class="pl-en">PutAsync</span>(<span class="pl-k">new</span> <span class="pl-en">UpdateTodo</span> { <span class="pl-smi">Id</span> <span class="pl-k">=</span> <span class="pl-smi">todo</span>.<span class="pl-smi">Id</span>, <span class="pl-smi">Title</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>gRPC<span class="pl-pds">"</span></span> });
+
+            <span class="pl-c"><span class="pl-c">//</span>GET /todos/1</span>
+            <span class="pl-smi">todo</span> <span class="pl-k">=</span> (<span class="pl-k">await</span> <span class="pl-smi">client</span>.<span class="pl-en">GetAsync</span>(<span class="pl-k">new</span> <span class="pl-en">GetTodo</span> { <span class="pl-smi">Id</span> <span class="pl-k">=</span> <span class="pl-smi">todo</span>.<span class="pl-smi">Id</span> })).<span class="pl-smi">Result</span>;
+            <span class="pl-s"><span class="pl-pds">$"</span>updated todo Title: {<span class="pl-smi">todo</span>.<span class="pl-smi">Title</span>}<span class="pl-pds">"</span></span>.<span class="pl-en">Print</span>();
+
+            <span class="pl-c"><span class="pl-c">//</span>DELETE /todos/1</span>
+            <span class="pl-k">await</span> <span class="pl-smi">client</span>.<span class="pl-en">DeleteAsync</span>(<span class="pl-k">new</span> <span class="pl-en">DeleteTodo</span> { <span class="pl-smi">Id</span> <span class="pl-k">=</span> <span class="pl-smi">todo</span>.<span class="pl-smi">Id</span> });
+
+            <span class="pl-c"><span class="pl-c">//</span>GET /todos</span>
+            <span class="pl-smi">all</span> <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-smi">client</span>.<span class="pl-en">GetAsync</span>(<span class="pl-k">new</span> <span class="pl-en">GetTodos</span>());
+            <span class="pl-s"><span class="pl-pds">$"</span>todos: {<span class="pl-smi">all</span>.<span class="pl-smi">Results</span><span class="pl-k">?</span>.<span class="pl-smi">Count</span> <span class="pl-k">??</span> <span class="pl-c1">0</span>}<span class="pl-pds">"</span></span>.<span class="pl-en">Print</span>();
+        }
+    }
+}</pre></div>
+<p>Refer to <a href="https://github.com/NetCoreApps/todo-world/tree/master/src/clients/csharp-generic">/src/clients/csharp-generic</a>
+for a complete example project.</p>
 </div>

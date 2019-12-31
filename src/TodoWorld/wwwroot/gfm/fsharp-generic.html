@@ -79,4 +79,62 @@
 <p>Run example:</p>
 <pre><code>$ dotnet run
 </code></pre>
+<h3>
+<a id="user-content-f-local-development-grpc-ssl-crud-example" class="anchor" href="#f-local-development-grpc-ssl-crud-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>F# Local Development gRPC SSL CRUD Example</h3>
+<div class="highlight highlight-source-fsharp"><pre>
+<span class="pl-k">open</span> <span class="pl-en">System</span>
+<span class="pl-k">open</span> <span class="pl-en">System.<span class="pl-en">Collections</span>.<span class="pl-en">Generic</span></span>
+<span class="pl-k">open</span> <span class="pl-en">System.<span class="pl-en">Threading</span></span>
+<span class="pl-k">open</span> <span class="pl-en">System.<span class="pl-en">Threading</span>.<span class="pl-en">Tasks</span></span>
+<span class="pl-k">open</span> <span class="pl-en">ServiceStack</span>
+<span class="pl-k">open</span> <span class="pl-en">TodoWorld.<span class="pl-en">ServiceModel</span></span>
+<span class="pl-k">open</span> <span class="pl-en">FSharp.<span class="pl-en">Control</span>.<span class="pl-en">Tasks</span>.<span class="pl-en">V2</span></span>
+
+<span class="pl-k">let</span> <span class="pl-smi">todo</span> <span class="pl-c1">()</span> <span class="pl-k">=</span> 
+    <span class="pl-k">let</span> <span class="pl-smi">seqCount</span> (<span class="pl-v">c</span>: <span class="pl-v">List</span>&lt;<span class="pl-v">Todo</span>&gt;) <span class="pl-k">=</span> <span class="pl-k">if</span> c <span class="pl-k">&lt;&gt;</span> <span class="pl-c1">null</span> <span class="pl-k">then</span> c.Count <span class="pl-k">else</span> <span class="pl-c1">0</span>    
+    <span class="pl-k">task {</span>
+        <span class="pl-c">// Certificate registration not required when using trusted local development certificate  </span>
+        <span class="pl-k">let</span> <span class="pl-smi">client</span> <span class="pl-k">=</span> <span class="pl-k">new</span> GrpcServiceClient(<span class="pl-s"><span class="pl-pds">"</span>https://localhost:5001<span class="pl-pds">"</span></span>)
+        <span class="pl-k">do!</span> client.PostAsync(<span class="pl-k">new</span> ResetTodos<span class="pl-c1">()</span>)
+
+        <span class="pl-c">//POST /todos</span>
+        <span class="pl-k">let!</span> <span class="pl-smi">t</span> <span class="pl-k">=</span> client.PostAsync(<span class="pl-k">new</span> CreateTodo(Title <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>ServiceStack<span class="pl-pds">"</span></span>))
+        <span class="pl-k">let</span> <span class="pl-smi">todo</span> <span class="pl-k">=</span> t.Result<span class="pl-k">;</span>
+        printfn <span class="pl-s"><span class="pl-pds">"</span>new todo Id: %i, Title: %s<span class="pl-pds">"</span></span> todo.Id todo.Title
+
+        <span class="pl-c">//GET /todos</span>
+        <span class="pl-k">let!</span> <span class="pl-smi">all</span> <span class="pl-k">=</span> client.GetAsync(<span class="pl-k">new</span> GetTodos<span class="pl-c1">()</span>)
+        printfn <span class="pl-s"><span class="pl-pds">"</span>todos: %i<span class="pl-pds">"</span></span> (seqCount all.Results)
+        
+        <span class="pl-c">//GET /todos/1</span>
+        <span class="pl-k">let!</span> <span class="pl-smi">t</span> <span class="pl-k">=</span> client.GetAsync(<span class="pl-k">new</span> GetTodo(Id <span class="pl-k">=</span> todo.Id))
+        <span class="pl-k">let</span> <span class="pl-smi">todo</span> <span class="pl-k">=</span> t.Result<span class="pl-k">;</span>
+        printfn <span class="pl-s"><span class="pl-pds">"</span>get todo Id: %i, Title: %s<span class="pl-pds">"</span></span> todo.Id todo.Title
+
+        <span class="pl-c">//GET /todos</span>
+        <span class="pl-k">let!</span> <span class="pl-smi">all</span> <span class="pl-k">=</span> client.GetAsync(<span class="pl-k">new</span> GetTodos<span class="pl-c1">()</span>)
+        printfn <span class="pl-s"><span class="pl-pds">"</span>todos: %i<span class="pl-pds">"</span></span> (seqCount all.Results)
+        
+        <span class="pl-c">//PUT /todos/1</span>
+        <span class="pl-k">do!</span> client.PutAsync(<span class="pl-k">new</span> UpdateTodo(Id <span class="pl-k">=</span> todo.Id, Title <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>gRPC<span class="pl-pds">"</span></span>))
+
+        <span class="pl-c">//GET /todos/1</span>
+        <span class="pl-k">let!</span> <span class="pl-smi">t</span> <span class="pl-k">=</span> client.GetAsync(<span class="pl-k">new</span> GetTodo(Id <span class="pl-k">=</span> todo.Id))
+        <span class="pl-k">let</span> <span class="pl-smi">todo</span> <span class="pl-k">=</span> t.Result<span class="pl-k">;</span>
+        printfn <span class="pl-s"><span class="pl-pds">"</span>updated todo Title: %s<span class="pl-pds">"</span></span> todo.Title
+
+        <span class="pl-c">//DELETE /todos/1</span>
+        <span class="pl-k">do!</span> client.DeleteAsync(<span class="pl-k">new</span> DeleteTodo(Id <span class="pl-k">=</span> todo.Id))
+
+        <span class="pl-c">//GET /todos</span>
+        <span class="pl-k">let!</span> <span class="pl-smi">all</span> <span class="pl-k">=</span> client.GetAsync(<span class="pl-k">new</span> GetTodos<span class="pl-c1">()</span>)
+        printfn <span class="pl-s"><span class="pl-pds">"</span>todos: %i<span class="pl-pds">"</span></span> (seqCount all.Results)
+    <span class="pl-k">}</span>
+
+<span class="pl-c1">[&lt;EntryPoint&gt;]</span>
+<span class="pl-k">let</span> <span class="pl-smi">main</span> <span class="pl-v">argv</span> <span class="pl-k">=</span>
+    todo<span class="pl-c1">()</span>.Wait<span class="pl-c1">()</span>
+    <span class="pl-c1">0</span></pre></div>
+<p>Refer to <a href="https://github.com/NetCoreApps/todo-world/tree/master/src/clients/fsharp-generic">/src/clients/fsharp-generic</a>
+for a complete example project.</p>
 </div>

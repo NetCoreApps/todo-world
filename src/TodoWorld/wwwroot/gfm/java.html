@@ -103,4 +103,59 @@ $ x proto-java https://todoworld.servicestack.net
 </code></pre>
 <p>Run example with <code>Shift+F10</code>:</p>
 <p><a href="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/java/run-ssl.png" target="_blank" rel="nofollow"><img src="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/java/run-ssl.png" alt="" style="max-width:100%;"></a></p>
+<h3>
+<a id="user-content-java-local-development-grpc-ssl-crud-example" class="anchor" href="#java-local-development-grpc-ssl-crud-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Java Local Development gRPC SSL CRUD Example</h3>
+<div class="highlight highlight-source-java"><pre><span class="pl-k">import</span> <span class="pl-smi">io.grpc.ManagedChannel</span>;
+<span class="pl-k">import</span> <span class="pl-smi">io.grpc.ManagedChannelBuilder</span>;
+<span class="pl-k">import</span> <span class="pl-smi">io.grpc.netty.GrpcSslContexts</span>;
+<span class="pl-k">import</span> <span class="pl-smi">io.grpc.netty.NettyChannelBuilder</span>;
+<span class="pl-k">import</span> <span class="pl-smi">io.netty.handler.ssl.util.InsecureTrustManagerFactory</span>;
+
+<span class="pl-k">import</span> <span class="pl-smi">javax.net.ssl.SSLException</span>;
+
+<span class="pl-k">import static</span> <span class="pl-smi">java.lang.System.out</span>;
+
+<span class="pl-k">class</span> <span class="pl-en">Program</span> {
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">void</span> <span class="pl-en">main</span>(<span class="pl-k">String</span>[] <span class="pl-v">args</span>) <span class="pl-k">throws</span> <span class="pl-smi">SSLException</span> {
+
+        <span class="pl-smi">ManagedChannel</span> channel <span class="pl-k">=</span> <span class="pl-smi">NettyChannelBuilder</span><span class="pl-k">.</span>forAddress(<span class="pl-s"><span class="pl-pds">"</span>localhost<span class="pl-pds">"</span></span>, <span class="pl-c1">5001</span>)
+                .sslContext(<span class="pl-smi">GrpcSslContexts</span><span class="pl-k">.</span>forClient()
+                .trustManager(<span class="pl-smi">InsecureTrustManagerFactory</span><span class="pl-c1"><span class="pl-k">.</span>INSTANCE</span>) <span class="pl-c"><span class="pl-c">//</span> allow localhost self-signed certificates</span>
+                .build())
+            .build();
+
+        <span class="pl-smi">GrpcServicesGrpc</span><span class="pl-k">.</span><span class="pl-smi">GrpcServicesBlockingStub</span> client <span class="pl-k">=</span> <span class="pl-smi">GrpcServicesGrpc</span><span class="pl-k">.</span>newBlockingStub(channel);
+
+        out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>TODO EXAMPLE<span class="pl-pds">"</span></span>);
+        client<span class="pl-k">.</span>postResetTodos(<span class="pl-smi">Services</span><span class="pl-k">.</span><span class="pl-smi">ResetTodos</span><span class="pl-k">.</span>newBuilder()<span class="pl-k">.</span>build());
+
+        <span class="pl-c"><span class="pl-c">//</span>POST /todos</span>
+        <span class="pl-smi">Services</span><span class="pl-k">.</span><span class="pl-smi">Todo</span> todo <span class="pl-k">=</span> client<span class="pl-k">.</span>postCreateTodo(<span class="pl-smi">Services</span><span class="pl-k">.</span><span class="pl-smi">CreateTodo</span><span class="pl-k">.</span>newBuilder()<span class="pl-k">.</span>setTitle(<span class="pl-s"><span class="pl-pds">"</span>ServiceStack<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>build())<span class="pl-k">.</span>getResult();
+        out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>new todo Id: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> todo<span class="pl-k">.</span>getId() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>, Title: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> todo<span class="pl-k">.</span>getTitle());
+
+        <span class="pl-c"><span class="pl-c">//</span>GET /todos</span>
+        <span class="pl-smi">Services</span><span class="pl-k">.</span><span class="pl-smi">GetTodosResponse</span> all <span class="pl-k">=</span> client<span class="pl-k">.</span>callGetTodos(<span class="pl-smi">Services</span><span class="pl-k">.</span><span class="pl-smi">GetTodos</span><span class="pl-k">.</span>newBuilder()<span class="pl-k">.</span>build());
+        out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>todos: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> all<span class="pl-k">.</span>getResultsCount());
+
+        <span class="pl-c"><span class="pl-c">//</span>GET /todos/1</span>
+        todo <span class="pl-k">=</span> (client<span class="pl-k">.</span>callGetTodo(<span class="pl-smi">Services</span><span class="pl-k">.</span><span class="pl-smi">GetTodo</span><span class="pl-k">.</span>newBuilder()<span class="pl-k">.</span>setId(todo<span class="pl-k">.</span>getId())<span class="pl-k">.</span>build()))<span class="pl-k">.</span>getResult();
+        out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>get todo Id: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> todo<span class="pl-k">.</span>getId() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>, Title: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> todo<span class="pl-k">.</span>getTitle());
+
+        <span class="pl-c"><span class="pl-c">//</span>PUT /todos/1</span>
+        client<span class="pl-k">.</span>putUpdateTodo(<span class="pl-smi">Services</span><span class="pl-k">.</span><span class="pl-smi">UpdateTodo</span><span class="pl-k">.</span>newBuilder()<span class="pl-k">.</span>setId(todo<span class="pl-k">.</span>getId())<span class="pl-k">.</span>setTitle(<span class="pl-s"><span class="pl-pds">"</span>gRPC<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>build());
+
+        <span class="pl-c"><span class="pl-c">//</span>GET /todos/1</span>
+        todo <span class="pl-k">=</span> (client<span class="pl-k">.</span>callGetTodo(<span class="pl-smi">Services</span><span class="pl-k">.</span><span class="pl-smi">GetTodo</span><span class="pl-k">.</span>newBuilder()<span class="pl-k">.</span>setId(todo<span class="pl-k">.</span>getId())<span class="pl-k">.</span>build()))<span class="pl-k">.</span>getResult();
+        out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>get todo Id: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> todo<span class="pl-k">.</span>getId() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>, Title: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> todo<span class="pl-k">.</span>getTitle());
+
+        <span class="pl-c"><span class="pl-c">//</span>DELETE /todos/1</span>
+        client<span class="pl-k">.</span>callDeleteTodo(<span class="pl-smi">Services</span><span class="pl-k">.</span><span class="pl-smi">DeleteTodo</span><span class="pl-k">.</span>newBuilder()<span class="pl-k">.</span>setId(todo<span class="pl-k">.</span>getId())<span class="pl-k">.</span>build());
+
+        <span class="pl-c"><span class="pl-c">//</span>GET /todos</span>
+        all <span class="pl-k">=</span> client<span class="pl-k">.</span>callGetTodos(<span class="pl-smi">Services</span><span class="pl-k">.</span><span class="pl-smi">GetTodos</span><span class="pl-k">.</span>newBuilder()<span class="pl-k">.</span>build());
+        out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>todos: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> all<span class="pl-k">.</span>getResultsCount());
+    }
+}</pre></div>
+<p>Refer to <a href="https://github.com/NetCoreApps/todo-world/tree/master/src/clients/java">/src/clients/java</a>
+for a complete example project.</p>
 </div>

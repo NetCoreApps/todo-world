@@ -390,6 +390,34 @@ body {
 	background-color: #fff;
 	padding-bottom: 80px;
 }
+
+#sidebar {
+	z-index: 10;
+	position: fixed;
+	top: 1em;
+	right: 1em;
+	background: #fff;
+
+	-webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.05) inset;
+	-moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.05) inset;
+	box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.05) inset;
+}
+#sidebar ul {
+	margin: 1em 0;
+	padding: 0 0 0 1em;
+	list-style: none;
+}
+#sidebar h4 {
+	margin: 0;
+}
+#sidebar a {
+	text-decoration: none;
+	color: #4078c0;
+}
+#sidebar a:hover {
+	opacity: .8;
+}
+
 .container {
 }
 .row {
@@ -400,7 +428,7 @@ body {
 .container.app {
 	background: #f5f5f5;
 	margin-top: -155px;
-	padding-top: 185px;
+	padding-top: 260px;
 }
 #app {
 	font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -530,6 +558,8 @@ body {
 .tabs .php {
 	color: #369;
 }
+.grpc-docs{
+}
 
 iframe.video {
 	/*width: 500px;*/
@@ -564,4 +594,28 @@ code {
 	margin: 0 2px;
 	border-radius: 2px;
 	white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+	.row.protoc .tabs div {
+		font-size: 50px;
+		line-height: 70px;		
+	}
+	#sidebar {
+		display: none;
+	}
+	.youtube {
+		text-align: center;
+	}
+	iframe.video {
+		width: 500px;
+		height: 315px;
+	}
+}
+
+@media (max-width: 768px) {
+}
+@media (max-width: 414px) {
+}
+@media (max-width: 375px) {
 }

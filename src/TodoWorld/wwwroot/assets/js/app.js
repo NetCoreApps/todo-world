@@ -137,6 +137,13 @@
 		} else {
 			//window.location.hash = ''; // tabs in docs uses #
 			app.visibility = 'all';
+
+			var activeTab = location.hash
+				? document.querySelector('.tabs .' + location.hash.substring(1))
+				: null;
+			if (activeTab) {
+				activeTab.click();
+			}
 		}
 	}
 

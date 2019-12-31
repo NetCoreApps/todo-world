@@ -74,4 +74,80 @@
 <p>Run example:</p>
 <pre><code>$ dart run
 </code></pre>
+<h3>
+<a id="user-content-dart-local-development-grpc-ssl-crud-example" class="anchor" href="#dart-local-development-grpc-ssl-crud-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dart Local Development gRPC SSL CRUD Example</h3>
+<div class="highlight highlight-source-dart"><pre><span class="pl-k">import</span> <span class="pl-s">'dart:convert'</span>;
+<span class="pl-k">import</span> <span class="pl-s">'dart:io'</span>;
+<span class="pl-k">import</span> <span class="pl-s">'package:grpc/grpc.dart'</span>;
+<span class="pl-k">import</span> <span class="pl-s">'package:todoworld/services.pb.dart'</span>;
+<span class="pl-k">import</span> <span class="pl-s">'package:todoworld/services.pbgrpc.dart'</span>;
+
+<span class="pl-c1">GrpcServicesClient</span> <span class="pl-en">createClient</span>() {
+  <span class="pl-k">return</span> <span class="pl-c1">GrpcServicesClient</span>(<span class="pl-c1">ClientChannel</span>(<span class="pl-s">'localhost'</span>, port<span class="pl-k">:</span><span class="pl-c1">5001</span>,
+    options<span class="pl-k">:</span><span class="pl-c1">ChannelOptions</span>(credentials<span class="pl-k">:</span> <span class="pl-c1">ChannelCredentials</span>.<span class="pl-en">secure</span>(
+        certificates<span class="pl-k">:</span> <span class="pl-c1">File</span>(<span class="pl-s">'../certs/dev.crt'</span>).<span class="pl-en">readAsBytesSync</span>(),
+        authority<span class="pl-k">:</span> <span class="pl-s">'localhost'</span>))));
+}
+
+<span class="pl-k">void</span> <span class="pl-en">main</span>(<span class="pl-c1">List</span><span class="pl-k">&lt;</span><span class="pl-c1">String</span><span class="pl-k">&gt;</span> args) <span class="pl-k">async</span> {
+
+  <span class="pl-k">var</span> client <span class="pl-k">=</span> <span class="pl-en">createClient</span>();
+  <span class="pl-k">await</span> client.<span class="pl-en">postResetTodos</span>(<span class="pl-c1">ResetTodos</span>());
+
+  <span class="pl-c">//POST /todos</span>
+  <span class="pl-k">var</span> todo <span class="pl-k">=</span> (<span class="pl-k">await</span> client.<span class="pl-en">postCreateTodo</span>(<span class="pl-c1">CreateTodo</span>()..title <span class="pl-k">=</span> <span class="pl-s">'ServiceStack'</span>)).result;
+  <span class="pl-en">print</span>(<span class="pl-s">'new todo Id: ${<span class="pl-v">todo.id</span>}, Title: ${<span class="pl-v">todo.title</span>}'</span>);
+
+  <span class="pl-c">//GET /todos</span>
+  <span class="pl-k">var</span> all <span class="pl-k">=</span> <span class="pl-k">await</span> client.<span class="pl-en">callGetTodos</span>(<span class="pl-c1">GetTodos</span>());
+  <span class="pl-en">print</span>(<span class="pl-s">'todos: ${<span class="pl-v">all.results.length</span>}'</span>);
+
+  <span class="pl-c">//GET /todos/1</span>
+  todo <span class="pl-k">=</span> (<span class="pl-k">await</span> client.<span class="pl-en">callGetTodo</span>(<span class="pl-c1">GetTodo</span>()..id <span class="pl-k">=</span> todo.id)).result;
+  <span class="pl-en">print</span>(<span class="pl-s">'get todo Id: ${<span class="pl-v">todo.id</span>}, Title: ${<span class="pl-v">todo.title</span>}'</span>);
+
+  <span class="pl-c">//PUT /todos/1</span>
+  <span class="pl-k">await</span> client.<span class="pl-en">putUpdateTodo</span>(<span class="pl-c1">UpdateTodo</span>()..id <span class="pl-k">=</span> todo.id..title <span class="pl-k">=</span> <span class="pl-s">'gRPC'</span>);
+
+  <span class="pl-c">//GET /todos/1</span>
+  todo <span class="pl-k">=</span> (<span class="pl-k">await</span> client.<span class="pl-en">callGetTodo</span>(<span class="pl-c1">GetTodo</span>()..id <span class="pl-k">=</span> todo.id)).result;
+  <span class="pl-en">print</span>(<span class="pl-s">'get todo Id: ${<span class="pl-v">todo.id</span>}, Title: ${<span class="pl-v">todo.title</span>}'</span>);
+
+  <span class="pl-c">//DELETE /todos/1</span>
+  <span class="pl-k">await</span> client.<span class="pl-en">callDeleteTodo</span>(<span class="pl-c1">DeleteTodo</span>()..id <span class="pl-k">=</span> todo.id);
+
+  <span class="pl-c">//GET /todos</span>
+  all <span class="pl-k">=</span> <span class="pl-k">await</span> client.<span class="pl-en">callGetTodos</span>(<span class="pl-c1">GetTodos</span>());
+  <span class="pl-en">print</span>(<span class="pl-s">'todos: ${<span class="pl-v">all.results.length</span>}'</span>);  
+}</pre></div>
+<h3>
+<a id="user-content-dart-server-events-grpc-server-stream-example" class="anchor" href="#dart-server-events-grpc-server-stream-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dart Server Events gRPC Server Stream Example</h3>
+<p>Consume <a href="https://docs.servicestack.net/server-events" rel="nofollow">ServiceStack Server Events</a> from gRPC Server Stream API:</p>
+<div class="highlight highlight-source-dart"><pre><span class="pl-k">var</span> stream <span class="pl-k">=</span> client.<span class="pl-en">serverStreamServerEvents</span>(<span class="pl-c1">StreamServerEvents</span>()..channels.<span class="pl-en">add</span>(<span class="pl-s">'todos'</span>));
+<span class="pl-k">await</span> <span class="pl-k">for</span> (<span class="pl-k">var</span> r <span class="pl-k">in</span> stream) {
+  <span class="pl-k">var</span> obj <span class="pl-k">=</span> <span class="pl-en">jsonDecode</span>(r.json);
+  <span class="pl-k">if</span> (r.selector.<span class="pl-en">startsWith</span>(<span class="pl-s">'todos'</span>)) {
+    <span class="pl-k">if</span> (obj <span class="pl-k">is</span> <span class="pl-c1">Map</span>) {
+      <span class="pl-en">print</span>(<span class="pl-s">'EVENT ${<span class="pl-v">r.selector</span>} [${<span class="pl-v">r.channel</span>}]: #${<span class="pl-v">obj['id']</span>} ${<span class="pl-v">obj['title']</span>}'</span>);
+    } <span class="pl-k">else</span> {
+      <span class="pl-en">print</span>(<span class="pl-s">'EVENT ${<span class="pl-v">r.selector</span>} [${<span class="pl-v">r.channel</span>}]: ${<span class="pl-v">obj</span>}'</span>);
+    }
+  } <span class="pl-k">else</span> {
+    <span class="pl-en">print</span>(<span class="pl-s">'EVENT ${<span class="pl-v">r.selector</span>} ${<span class="pl-v">r.channels</span>}: #${<span class="pl-v">obj['userId']</span>} ${<span class="pl-v">obj['displayName']</span>}'</span>);
+  }
+}</pre></div>
+<h3>
+<a id="user-content-dart-grpc-server-stream-files-example" class="anchor" href="#dart-grpc-server-stream-files-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dart gRPC Server Stream Files Example</h3>
+<div class="highlight highlight-source-dart"><pre><span class="pl-k">var</span> stream <span class="pl-k">=</span> client.<span class="pl-en">serverStreamFiles</span>(<span class="pl-c1">StreamFiles</span>()..paths.<span class="pl-en">addAll</span>([
+  <span class="pl-s">'/js/ss-utils.js'</span>,
+  <span class="pl-s">'/js/hot-loader.js'</span>,
+  <span class="pl-s">'/js/hot-fileloader.js'</span>,
+]));
+
+<span class="pl-k">await</span> <span class="pl-k">for</span> (<span class="pl-k">var</span> file <span class="pl-k">in</span> stream) {
+  <span class="pl-k">var</span> text <span class="pl-k">=</span> utf8.<span class="pl-en">decode</span>(file.body);
+  <span class="pl-en">print</span>(<span class="pl-s">'FILE ${<span class="pl-v">file.name</span>} (${<span class="pl-v">file.length</span>}): ${<span class="pl-v">text.substring(0, text.length &lt; 50 ? text.length : 50)</span>} ...'</span>);
+}</pre></div>
+<p>Refer to <a href="https://github.com/NetCoreApps/todo-world/tree/master/src/clients/dart">/src/clients/dart</a>
+for a complete example project.</p>
 </div>
