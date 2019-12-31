@@ -1,0 +1,101 @@
+<div class="gfm"><h2>
+<a id="user-content-swift-google-protoc-generated-grpcserviceclient-example" class="anchor" href="#swift-google-protoc-generated-grpcserviceclient-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Swift Google protoc generated GrpcServiceClient Example</h2>
+<p>Install <a href="https://docs.servicestack.net/web-tool" rel="nofollow">x dotnet tool</a>:</p>
+<pre><code>$ dotnet tool install --global x 
+</code></pre>
+<p>Create a new Swift Console App:</p>
+<pre><code>$ swift package init --type executable
+</code></pre>
+<p>Add <code>grpc-swift</code> Swift Package in <code>Package.swift</code> and <strong>"GRPC"</strong> dependency to each target:</p>
+<div class="highlight highlight-source-swift"><pre><span class="pl-k">import</span> <span class="pl-en">PackageDescription</span>
+
+<span class="pl-k">let</span> package <span class="pl-k">=</span> <span class="pl-c1">Package</span>(
+    <span class="pl-c1">name</span>: <span class="pl-s"><span class="pl-pds">"</span>TodoWorld<span class="pl-pds">"</span></span>,
+    <span class="pl-c1">dependencies</span>: [
+        <span class="pl-c"><span class="pl-c">//</span> Dependencies declare other packages that this package depends on.</span>
+<span class="pl-c"></span>        <span class="pl-c"><span class="pl-c">//</span> .package(url: /* package url */, from: "1.0.0"),</span>
+<span class="pl-c"></span>        .<span class="pl-c1">package</span>(<span class="pl-c1">url</span>: <span class="pl-s"><span class="pl-pds">"</span>https://github.com/grpc/grpc-swift.git<span class="pl-pds">"</span></span>, <span class="pl-c1">from</span>: <span class="pl-s"><span class="pl-pds">"</span>1.0.0-alpha.8<span class="pl-pds">"</span></span>)
+    ],
+    <span class="pl-c1">targets</span>: [
+        <span class="pl-c"><span class="pl-c">//</span> Targets are the basic building blocks of a package. A target can define a module or a test suite.</span>
+<span class="pl-c"></span>        <span class="pl-c"><span class="pl-c">//</span> Targets can depend on other targets in this package, and on products in packages which this package depends on.</span>
+<span class="pl-c"></span>        .<span class="pl-c1">target</span>(
+            <span class="pl-c1">name</span>: <span class="pl-s"><span class="pl-pds">"</span>TodoWorld<span class="pl-pds">"</span></span>,
+            <span class="pl-c1">dependencies</span>: [<span class="pl-s"><span class="pl-pds">"</span>GRPC<span class="pl-pds">"</span></span>]),
+        .<span class="pl-c1">testTarget</span>(
+            <span class="pl-c1">name</span>: <span class="pl-s"><span class="pl-pds">"</span>TodoWorldTests<span class="pl-pds">"</span></span>,
+            <span class="pl-c1">dependencies</span>: [<span class="pl-s"><span class="pl-pds">"</span>TodoWorld<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>GRPC<span class="pl-pds">"</span></span>]),
+    ]
+)</pre></div>
+<p>Add protoc generated TodoWorld DTOs and gRPC GrpcServiceClient:</p>
+<pre><code>$ cd Sources/TodoWorld
+$ x proto-swift https://todoworld.servicestack.net
+</code></pre>
+<p>Use protoc generated DTOs and <code>GrpcServiceClient</code> to call TodoWorld gRPC Service:</p>
+<h3>
+<a id="user-content-swift-protoc-grpc-insecure-example" class="anchor" href="#swift-protoc-grpc-insecure-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Swift protoc gRPC insecure Example</h3>
+<div class="highlight highlight-source-swift"><pre><span class="pl-k">import</span> <span class="pl-en">Foundation</span>
+<span class="pl-k">import</span> <span class="pl-en">GRPC</span>
+<span class="pl-k">import</span> <span class="pl-en">NIO</span>
+<span class="pl-k">import</span> <span class="pl-en">NIOSSL</span>
+
+<span class="pl-k">do</span> {
+
+    <span class="pl-k">let</span> configuration <span class="pl-k">=</span> ClientConnection.<span class="pl-c1">Configuration</span>(
+        <span class="pl-c1">target</span>: .<span class="pl-c1">hostAndPort</span>(<span class="pl-s"><span class="pl-pds">"</span>todoworld.servicestack.net<span class="pl-pds">"</span></span>, <span class="pl-c1">5054</span>),
+        <span class="pl-c1">eventLoopGroup</span>: <span class="pl-c1">MultiThreadedEventLoopGroup</span>(<span class="pl-c1">numberOfThreads</span>: <span class="pl-c1">1</span>)
+    )
+
+    <span class="pl-k">let</span> client <span class="pl-k">=</span> <span class="pl-c1">GrpcServicesServiceClient</span>(<span class="pl-c1">connection</span>: <span class="pl-c1">ClientConnection</span>(<span class="pl-c1">configuration</span>: configuration))
+
+    <span class="pl-k">var</span> request <span class="pl-k">=</span> <span class="pl-c1">Hello</span>()
+    request.<span class="pl-smi">name</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>gRPC Swift<span class="pl-pds">"</span></span>
+    <span class="pl-k">let</span> response <span class="pl-k">=</span> <span class="pl-k">try</span> client.<span class="pl-c1">getHello</span>(request).<span class="pl-smi">response</span>.<span class="pl-c1">wait</span>().<span class="pl-smi">result</span>
+    <span class="pl-c1">print</span>(response)
+
+} <span class="pl-k">catch</span> {
+    <span class="pl-c1">print</span>(<span class="pl-s"><span class="pl-pds">"</span>ERROR<span class="pl-cce">\n</span><span class="pl-pse">\(</span><span class="pl-s1">error</span><span class="pl-pse"><span class="pl-s1">)</span></span><span class="pl-pds">"</span></span>)
+}</pre></div>
+<p>Override <code>main.swift</code> with the above Swift Example:</p>
+<pre><code>$ x mix todoworld-swift
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ swift run
+</code></pre>
+<h3>
+<a id="user-content-swift-protoc-grpc-ssl-example" class="anchor" href="#swift-protoc-grpc-ssl-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Swift protoc gRPC SSL Example</h3>
+<p>Download TodoWorld SSL Certificate used for its gRPC HTTP/2 Services:</p>
+<pre><code>$ x get https://todoworld.servicestack.net/grpc.crt 
+</code></pre>
+<p>Use certificate when initializing ClientConnection.Configuration:</p>
+<div class="highlight highlight-source-swift"><pre><span class="pl-k">import</span> <span class="pl-en">Foundation</span>
+<span class="pl-k">import</span> <span class="pl-en">GRPC</span>
+<span class="pl-k">import</span> <span class="pl-en">NIO</span>
+<span class="pl-k">import</span> <span class="pl-en">NIOSSL</span>
+
+<span class="pl-k">do</span> {
+
+    <span class="pl-k">let</span> configuration <span class="pl-k">=</span> ClientConnection.<span class="pl-c1">Configuration</span>(
+        <span class="pl-c1">target</span>: .<span class="pl-c1">hostAndPort</span>(<span class="pl-s"><span class="pl-pds">"</span>todoworld.servicestack.net<span class="pl-pds">"</span></span>, <span class="pl-c1">50051</span>),
+        <span class="pl-c1">eventLoopGroup</span>: <span class="pl-c1">MultiThreadedEventLoopGroup</span>(<span class="pl-c1">numberOfThreads</span>: <span class="pl-c1">1</span>),
+        <span class="pl-c1">tls</span>: .<span class="pl-k">init</span>(<span class="pl-c1">certificateChain</span>: <span class="pl-k">try</span> NIOSSLCertificate.<span class="pl-c1">fromPEMFile</span>(<span class="pl-s"><span class="pl-pds">"</span>grpc.crt<span class="pl-pds">"</span></span>).<span class="pl-c1">map</span> { .<span class="pl-c1">certificate</span>(<span class="pl-c1">$0</span>) }, 
+                   <span class="pl-c1">certificateVerification</span>: .<span class="pl-c1">none</span>) <span class="pl-c"><span class="pl-c">//</span>TODO enable SSL verification</span>
+<span class="pl-c"></span>    )
+
+    <span class="pl-k">let</span> client <span class="pl-k">=</span> <span class="pl-c1">GrpcServicesServiceClient</span>(<span class="pl-c1">connection</span>: <span class="pl-c1">ClientConnection</span>(<span class="pl-c1">configuration</span>: configuration))
+
+    <span class="pl-k">var</span> request <span class="pl-k">=</span> <span class="pl-c1">Hello</span>()
+    request.<span class="pl-smi">name</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>gRPC Swift<span class="pl-pds">"</span></span>
+    <span class="pl-k">let</span> response <span class="pl-k">=</span> <span class="pl-k">try</span> client.<span class="pl-c1">getHello</span>(request).<span class="pl-smi">response</span>.<span class="pl-c1">wait</span>().<span class="pl-smi">result</span>
+    <span class="pl-c1">print</span>(response)
+
+} <span class="pl-k">catch</span> {
+    <span class="pl-c1">print</span>(<span class="pl-s"><span class="pl-pds">"</span>ERROR<span class="pl-cce">\n</span><span class="pl-pse">\(</span><span class="pl-s1">error</span><span class="pl-pse"><span class="pl-s1">)</span></span><span class="pl-pds">"</span></span>)
+}</pre></div>
+<p>Override <code>main.swift</code> with the above Swift Example:</p>
+<pre><code>$ x mix todoworld-swift-ssl
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ swift run
+</code></pre>
+</div>

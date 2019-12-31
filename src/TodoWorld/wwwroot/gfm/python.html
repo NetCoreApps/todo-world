@@ -1,0 +1,61 @@
+<div class="gfm"><h2>
+<a id="user-content-python-google-protoc-generated-grpcservicesstub-client-example" class="anchor" href="#python-google-protoc-generated-grpcservicesstub-client-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Python Google protoc generated GrpcServicesStub Client Example</h2>
+<p>Install <a href="https://docs.servicestack.net/web-tool" rel="nofollow">x dotnet tool</a>:</p>
+<pre><code>$ dotnet tool install --global x 
+</code></pre>
+<p>Install <a href="https://pypi.org/project/grpcio-tools/" rel="nofollow">grpcio-tools</a>:</p>
+<pre><code>$ pip install grpcio-tools
+</code></pre>
+<p>Add protoc generated TodoWorld DTOs and gRPC Service Client:</p>
+<pre><code>$ x proto-python https://todoworld.servicestack.net
+</code></pre>
+<h3>
+<a id="user-content-python-protoc-grpc-insecure-example" class="anchor" href="#python-protoc-grpc-insecure-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Python protoc gRPC insecure Example</h3>
+<p>Use protoc generated DTOs and <code>GrpcServicesStub</code> to call TodoWorld gRPC Service in <code>main.py</code>:</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">import</span> grpc
+<span class="pl-k">import</span> services_pb2
+<span class="pl-k">import</span> services_pb2_grpc
+
+<span class="pl-k">def</span> <span class="pl-en">run</span>():
+    <span class="pl-k">with</span> grpc.insecure_channel(<span class="pl-s"><span class="pl-pds">'</span>todoworld.servicestack.net:5054<span class="pl-pds">'</span></span>) <span class="pl-k">as</span> channel:
+
+        client <span class="pl-k">=</span> services_pb2_grpc.GrpcServicesStub(channel)
+        response <span class="pl-k">=</span> client.GetHello(services_pb2.Hello(<span class="pl-v">Name</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>gRPC Python<span class="pl-pds">"</span></span>))
+        <span class="pl-c1">print</span>(response.Result)
+
+<span class="pl-k">if</span> <span class="pl-c1">__name__</span> <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">'</span>__main__<span class="pl-pds">'</span></span>:
+    run()</pre></div>
+<p>Create <code>main.py</code> with the above Python Example:</p>
+<pre><code>$ x mix todoworld-python
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ python main.py
+</code></pre>
+<h3>
+<a id="user-content-python-protoc-grpc-ssl-example" class="anchor" href="#python-protoc-grpc-ssl-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Python protoc gRPC SSL Example</h3>
+<p>Download TodoWorld SSL Certificate used for its gRPC HTTP/2 Services:</p>
+<pre><code>$ x get https://todoworld.servicestack.net/grpc.crt 
+</code></pre>
+<p>Use certificate when initializing <code>GrpcServicesStub</code>:</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">import</span> grpc
+<span class="pl-k">import</span> services_pb2
+<span class="pl-k">import</span> services_pb2_grpc
+
+<span class="pl-k">def</span> <span class="pl-en">run</span>():
+    <span class="pl-k">with</span> <span class="pl-c1">open</span>(<span class="pl-s"><span class="pl-pds">'</span>grpc.crt<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>rb<span class="pl-pds">'</span></span>) <span class="pl-k">as</span> f:
+        credentials <span class="pl-k">=</span> grpc.ssl_channel_credentials(f.read())
+    <span class="pl-k">with</span> grpc.secure_channel(<span class="pl-s"><span class="pl-pds">'</span>todoworld.servicestack.net:50051<span class="pl-pds">'</span></span>, credentials) <span class="pl-k">as</span> channel:
+
+        client <span class="pl-k">=</span> services_pb2_grpc.GrpcServicesStub(channel)
+        response <span class="pl-k">=</span> client.GetHello(services_pb2.Hello(<span class="pl-v">Name</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>gRPC Python<span class="pl-pds">"</span></span>))
+        <span class="pl-c1">print</span>(response.Result)
+
+<span class="pl-k">if</span> <span class="pl-c1">__name__</span> <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">'</span>__main__<span class="pl-pds">'</span></span>:
+    run()</pre></div>
+<p>Override <code>main.py</code> with the above Python Example:</p>
+<pre><code>$ x mix todoworld-python-ssl
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ python main.py
+</code></pre>
+</div>

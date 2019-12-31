@@ -1,0 +1,132 @@
+<div class="gfm"><h2>
+<a id="user-content-c-google-protoc-generated-grpcserviceclient-example" class="anchor" href="#c-google-protoc-generated-grpcserviceclient-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>C# Google protoc generated GrpcServiceClient Example</h2>
+<p>Install <a href="https://docs.servicestack.net/web-tool" rel="nofollow">x dotnet tool</a>:</p>
+<pre><code>$ dotnet tool install --global x 
+</code></pre>
+<p>Create a new C# Console App:</p>
+<pre><code>$ dotnet new console
+</code></pre>
+<p>Add required NuGet Packages:</p>
+<pre><code>$ dotnet add package Google.Protobuf
+$ dotnet add package ServiceStack.GrpcClient
+</code></pre>
+<p>Download TodoWorld SSL Certificate used for its gRPC HTTP/2 Services:</p>
+<pre><code>$ x get https://todoworld.servicestack.net/grpc.crt 
+</code></pre>
+<p>Add protoc generated TodoWorld DTOs and gRPC GrpcServiceClient:</p>
+<pre><code>$ x proto-csharp https://todoworld.servicestack.net
+</code></pre>
+<p>Use protoc generated DTOs and  <code>GrpcServiceClient</code> to call TodoWorld gRPC Service:</p>
+<h3>
+<a id="user-content-c-smart-grpc-grpcservicesclient-example" class="anchor" href="#c-smart-grpc-grpcservicesclient-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>C# smart gRPC GrpcServicesClient Example</h3>
+<p>The smart client registers a ServiceStack Interceptor to enable the richer integration features in ServiceStack
+Services as found in ServiceStack's Generic <code>GrpcServiceClient</code> above, including detailed structured Exception handling,
+built-in JWT, Session, Credentials Auth support,
+<a href="https://docs.servicestack.net/jwt-authprovider#automatically-refreshing-access-tokens" rel="nofollow">Automatically refreshing Access Tokens</a>, etc.</p>
+<p>This ServiceStack Interceptor can be registered using <code>GrpcServiceStack.Client()</code>  when creating the protoc <code>GrpcServicesClient</code>:</p>
+<div class="highlight highlight-source-cs"><pre><span class="pl-k">using</span> <span class="pl-en">System</span>;
+<span class="pl-k">using</span> <span class="pl-en">System</span>.<span class="pl-en">Security</span>.<span class="pl-en">Cryptography</span>.<span class="pl-en">X509Certificates</span>;
+<span class="pl-k">using</span> <span class="pl-en">System</span>.<span class="pl-en">Threading</span>.<span class="pl-en">Tasks</span>;
+<span class="pl-k">using</span> <span class="pl-en">ServiceStack</span>;
+
+<span class="pl-k">namespace</span> <span class="pl-en">TodoWorld</span>
+{
+    <span class="pl-k">class</span> <span class="pl-en">Program</span>
+    {
+        <span class="pl-k">static</span> <span class="pl-k">async</span> <span class="pl-en">Task</span> <span class="pl-en">Main</span>(<span class="pl-k">string</span>[] <span class="pl-smi">args</span>)
+        {
+            <span class="pl-k">var</span> <span class="pl-smi">client</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">GrpcServices</span>.<span class="pl-en">GrpcServicesClient</span>(
+                <span class="pl-smi">GrpcServiceStack</span>.<span class="pl-en">Client</span>(<span class="pl-s"><span class="pl-pds">"</span>https://todoworld.servicestack.net:50051<span class="pl-pds">"</span></span>, 
+                    <span class="pl-k">new</span> <span class="pl-en">X509Certificate2</span>(<span class="pl-s"><span class="pl-pds">"</span>grpc.crt<span class="pl-pds">"</span></span>),
+                    <span class="pl-smi">GrpcUtils</span>.<span class="pl-en">AllowSelfSignedCertificatesFrom</span>(<span class="pl-s"><span class="pl-pds">"</span>todoworld.servicestack.net<span class="pl-pds">"</span></span>)));
+
+            <span class="pl-k">var</span> <span class="pl-smi">response</span> <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-smi">client</span>.<span class="pl-en">GetHelloAsync</span>(<span class="pl-k">new</span> <span class="pl-en">Hello</span> { <span class="pl-smi">Name</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>gRPC C#<span class="pl-pds">"</span></span> });
+
+            <span class="pl-smi">Console</span>.<span class="pl-en">WriteLine</span>(<span class="pl-smi">response</span>.<span class="pl-smi">Result</span>);
+        }
+    }
+}</pre></div>
+<p>Override <code>Program.cs</code> with the above C# Example:</p>
+<pre><code>$ x mix todoworld-csharp-smart
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ dotnet run
+</code></pre>
+<h3>
+<a id="user-content-protoc-only-generated-service-client" class="anchor" href="#protoc-only-generated-service-client" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>protoc-only generated Service Client</h3>
+<p>Alternatively clients can opt to use the vanilla protoc generated ServiceClient without any dependency to
+<strong>ServiceStack.GrpcClient</strong> which will fallback to gRPC's default behavior of basic error handling with any
+auth headers needing to be populated manually.</p>
+<p>Add required core package dependencies:</p>
+<pre><code>$ dotnet add package Grpc.Core
+$ dotnet add package Grpc.Net.Client
+</code></pre>
+<h3>
+<a id="user-content-c-protoc-grpc-insecure-example" class="anchor" href="#c-protoc-grpc-insecure-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>C# protoc gRPC insecure Example</h3>
+<div class="highlight highlight-source-cs"><pre><span class="pl-k">using</span> <span class="pl-en">System</span>;
+<span class="pl-k">using</span> <span class="pl-en">System</span>.<span class="pl-en">Threading</span>.<span class="pl-en">Tasks</span>;
+<span class="pl-k">using</span> <span class="pl-en">Grpc</span>.<span class="pl-en">Core</span>;
+<span class="pl-k">using</span> <span class="pl-en">Grpc</span>.<span class="pl-en">Net</span>.<span class="pl-en">Client</span>;
+
+<span class="pl-k">namespace</span> <span class="pl-en">TodoWorld</span>
+{
+    <span class="pl-k">class</span> <span class="pl-en">Program</span>
+    {
+        <span class="pl-k">static</span> <span class="pl-k">async</span> <span class="pl-en">Task</span> <span class="pl-en">Main</span>(<span class="pl-k">string</span>[] <span class="pl-smi">args</span>)
+        {
+            <span class="pl-smi">AppContext</span>.<span class="pl-en">SetSwitch</span>(<span class="pl-s"><span class="pl-pds">"</span>System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport<span class="pl-pds">"</span></span>, <span class="pl-c1">true</span>);
+            <span class="pl-k">var</span> <span class="pl-smi">client</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">GrpcServices</span>.<span class="pl-en">GrpcServicesClient</span>(
+                <span class="pl-smi">GrpcChannel</span>.<span class="pl-en">ForAddress</span>(<span class="pl-s"><span class="pl-pds">"</span>http://todoworld.servicestack.net:5054<span class="pl-pds">"</span></span>));
+
+            <span class="pl-k">var</span> <span class="pl-smi">response</span> <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-smi">client</span>.<span class="pl-en">GetHelloAsync</span>(<span class="pl-k">new</span> <span class="pl-en">Hello</span> { <span class="pl-smi">Name</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>gRPC C#<span class="pl-pds">"</span></span> });
+
+            <span class="pl-smi">Console</span>.<span class="pl-en">WriteLine</span>(<span class="pl-smi">response</span>.<span class="pl-smi">Result</span>);
+        }
+    }
+}</pre></div>
+<p>Override <code>Program.cs</code> with the above C# Example:</p>
+<pre><code>$ x mix todoworld-csharp
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ dotnet run
+</code></pre>
+<h3>
+<a id="user-content-c-protoc-grpc-ssl-example" class="anchor" href="#c-protoc-grpc-ssl-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>C# protoc gRPC SSL Example</h3>
+<div class="highlight highlight-source-cs"><pre><span class="pl-k">using</span> <span class="pl-en">System</span>;
+<span class="pl-k">using</span> <span class="pl-en">System</span>.<span class="pl-en">Linq</span>;
+<span class="pl-k">using</span> <span class="pl-en">System</span>.<span class="pl-en">Net</span>.<span class="pl-en">Security</span>;
+<span class="pl-k">using</span> <span class="pl-en">System</span>.<span class="pl-en">Security</span>.<span class="pl-en">Cryptography</span>.<span class="pl-en">X509Certificates</span>;
+<span class="pl-k">using</span> <span class="pl-en">System</span>.<span class="pl-en">Threading</span>.<span class="pl-en">Tasks</span>;
+<span class="pl-k">using</span> <span class="pl-en">Grpc</span>.<span class="pl-en">Core</span>;
+<span class="pl-k">using</span> <span class="pl-en">Grpc</span>.<span class="pl-en">Net</span>.<span class="pl-en">Client</span>;
+
+<span class="pl-k">namespace</span> <span class="pl-en">TodoWorld</span>
+{
+    <span class="pl-k">class</span> <span class="pl-en">Program</span>
+    {
+        <span class="pl-k">static</span> <span class="pl-k">async</span> <span class="pl-en">Task</span> <span class="pl-en">Main</span>(<span class="pl-k">string</span>[] <span class="pl-smi">args</span>)
+        {
+            <span class="pl-k">var</span> <span class="pl-smi">client</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">GrpcServices</span>.<span class="pl-en">GrpcServicesClient</span>(
+                <span class="pl-smi">GrpcChannel</span>.<span class="pl-en">ForAddress</span>(<span class="pl-s"><span class="pl-pds">"</span>https://todoworld.servicestack.net:50051<span class="pl-pds">"</span></span>, <span class="pl-k">new</span> <span class="pl-en">GrpcChannelOptions</span> {
+                    <span class="pl-smi">HttpClient</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">System</span>.<span class="pl-k">Net</span>.<span class="pl-k">Http</span>.<span class="pl-en">HttpClient</span>(<span class="pl-k">new</span> <span class="pl-k">System</span>.<span class="pl-k">Net</span>.<span class="pl-k">Http</span>.<span class="pl-en">HttpClientHandler</span> {
+                        <span class="pl-smi">ClientCertificates</span> <span class="pl-k">=</span> { <span class="pl-k">new</span> <span class="pl-en">X509Certificate2</span>(<span class="pl-s"><span class="pl-pds">"</span>grpc.crt<span class="pl-pds">"</span></span>) },
+                        <span class="pl-smi">ServerCertificateCustomValidationCallback</span> <span class="pl-k">=</span> (<span class="pl-smi">req</span>, <span class="pl-smi">cert</span>, <span class="pl-smi">certChain</span>, <span class="pl-smi">sslErrors</span>) <span class="pl-k">=&gt;</span>
+                            <span class="pl-smi">cert</span>.<span class="pl-smi">SubjectName</span>.<span class="pl-smi">RawData</span>.<span class="pl-en">SequenceEqual</span>(<span class="pl-smi">cert</span>.<span class="pl-smi">IssuerName</span>.<span class="pl-smi">RawData</span>) <span class="pl-k">&amp;&amp;</span> <span class="pl-c"><span class="pl-c">//</span> self-signed</span>
+                            <span class="pl-smi">cert</span>.<span class="pl-en">GetNameInfo</span>(<span class="pl-smi">X509NameType</span>.<span class="pl-smi">DnsName</span>, <span class="pl-smi">forIssuer</span>:<span class="pl-c1">false</span>) <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">"</span>todoworld.servicestack.net<span class="pl-pds">"</span></span> <span class="pl-k">&amp;&amp;</span>
+                            (<span class="pl-smi">sslErrors</span> <span class="pl-k">&amp;</span> <span class="pl-k">~</span><span class="pl-smi">sslErrors</span>.<span class="pl-smi">RemoteCertificateChainErrors</span>) <span class="pl-k">==</span> <span class="pl-smi">sslErrors</span>.<span class="pl-smi">None</span> <span class="pl-c"><span class="pl-c">//</span> only this</span>
+                    })
+                }));
+
+            <span class="pl-k">var</span> <span class="pl-smi">response</span> <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-smi">client</span>.<span class="pl-en">GetHelloAsync</span>(<span class="pl-k">new</span> <span class="pl-en">Hello</span> { <span class="pl-smi">Name</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>gRPC C#<span class="pl-pds">"</span></span> });
+
+            <span class="pl-smi">Console</span>.<span class="pl-en">WriteLine</span>(<span class="pl-smi">response</span>.<span class="pl-smi">Result</span>);
+        }
+    }
+}</pre></div>
+<p>Override <code>Program.cs</code> with the above C# Example:</p>
+<pre><code>$ x mix todoworld-csharp-ssl
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ dotnet run
+</code></pre>
+</div>

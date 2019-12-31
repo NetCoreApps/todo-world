@@ -3,6 +3,8 @@ window.TODOS = {{ 'GetTodos' |> execService |> get('Results') |> json }};
 {{/script}}
 
 {{#raw}}
+<div class="container app">
+<div id="app">
 <section class="todoapp">
     <header class="header">
         <h1>Todo World</h1>
@@ -55,5 +57,189 @@ window.TODOS = {{ 'GetTodos' |> execService |> get('Results') |> json }};
         as part of <a href="http://todomvc.com">TodoMVC</a>
     </p>
 </footer>
+</div>
+</div>
+
+<div class="container">
+    <a name="csharp-generic"></a>
+    <a name="vb-generic"></a>
+    <a name="fsharp-generic"></a>
+    <div class="row grpc">
+        <h2>gRPC</h2>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row p bg-net">
+        Smart Generic .NET gRPC Service Client using clean programming model and rich POCO DTOs
+    </div>
+</div>
+{{/raw}}
+
+<div class="container">
+    <div class="row generic nav-tabs">
+        <div class="tabs">
+            <div class="tab csharp-generic active" data-click="tab:csharp-generic"><span>C#</span></div>
+            <div class="tab vb-generic" data-click="tab:vb-generic"><span><b>VB</b>.net</span></div>
+            <div class="tab fsharp-generic" data-click="tab:fsharp-generic"><span>F#</span></div>
+        </div>
+
+        <div class="tab-content">
+            <div class="youtube"></div>
+            <div class="tab-pane csharp-generic active" data-youtube-id="K0QAUQPJNtM">
+                <div class="code">
+                    {{ 'gfm/csharp-generic.md' |> githubMarkdown }}
+                </div>
+            </div>
+            <div class="tab-pane vb-generic" data-youtube-id="9XTy3eOdpHw">
+                <div class="code">
+                    {{ 'gfm/vb-generic.md' |> githubMarkdown }}
+                </div>
+            </div>
+            <div class="tab-pane fsharp-generic" data-youtube-id="y3MBaapcN-0">
+                <div class="code">
+                    {{ 'gfm/fsharp-generic.md' |> githubMarkdown }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <a name="csharp"></a>
+    <a name="swift"></a>
+    <a name="java"></a>
+    <a name="dart"></a>
+    <a name="go"></a>
+    <a name="python"></a>
+    <a name="ruby"></a>
+    <a name="php"></a>
+
+    <div class="row p bg-protoc">
+        Google protoc gRPC generated Service Clients
+    </div>
+</div>
+
+<div class="container">
+    <div class="row protoc nav-tabs">
+        <div class="tabs">
+            <div class="tab csharp active" data-click="tab:csharp"><span>C#</span></div>
+            <div class="tab swift" data-click="tab:swift"><span>Swift</span></div>
+            <div class="tab java" data-click="tab:java"><span>Java</span></div>
+            <div class="tab dart" data-click="tab:dart"><span>Dart</span></div>
+            <div class="tab go" data-click="tab:go"><span>Go</span></div>
+            <div class="tab node" data-click="tab:node"><span>Node.js</span></div>
+            <div class="tab python" data-click="tab:python"><span>Python</span></div>
+            <div class="tab ruby" data-click="tab:ruby"><span>Ruby</span></div>
+            <div class="tab php" data-click="tab:php"><span>PHP</span></div>
+            <div class="tab"></div>
+            <div class="tab"></div>
+            <div class="tab"></div>
+<!--            
+            <div class="tab cpp" data-click="tab:cpp"><span>C++</span></div>
+            <div class="tab java-lite" data-click="tab:java-lite"><span>Java (Lite)</span></div>
+            <div class="tab objc" data-click="tab:objc"><span>Objective-C</span></div>
+-->
+        </div>
+
+        <div class="tab-content">
+            <div class="youtube"></div>
+            <div class="tab-pane csharp active" data-youtube-id="0TXk9y24NIw">
+                <div class="code">
+                    {{ 'gfm/csharp.md' |> githubMarkdown }}
+                </div>
+            </div>
+            <div class="tab-pane swift" data-youtube-id="FLHbN_Z9z98">
+                <div class="code">
+                    {{ 'gfm/swift.md' |> githubMarkdown }}
+                </div>
+            </div>
+            <div class="tab-pane java" data-youtube-id="pe7oKApToDA">
+                <div class="code">
+                    {{ 'gfm/java.md' |> githubMarkdown }}
+                </div>
+            </div>
+            <div class="tab-pane dart" data-youtube-id="fDARSMNlt50">
+                <div class="code">
+                    {{ 'gfm/dart.md' |> githubMarkdown }}
+                </div>
+            </div>
+            <div class="tab-pane go" data-youtube-id="FYA32J1-IA0">
+                <div class="code">
+                    {{ 'gfm/go.md' |> githubMarkdown }}
+                </div>
+            </div>
+            <div class="tab-pane node" data-youtube-id="QL56lOHiXVM">
+                <div class="code">
+                    {{ 'gfm/node.md' |> githubMarkdown }}
+                </div>
+            </div>
+            <div class="tab-pane python" data-youtube-id="rcDdabAELnA">
+                <div class="code">
+                    {{ 'gfm/python.md' |> githubMarkdown }}
+                </div>
+            </div>
+            <div class="tab-pane ruby" data-youtube-id="yvLnqgXKYTI">
+                <div class="code">
+                    {{ 'gfm/ruby.md' |> githubMarkdown }}
+                </div>
+            </div>
+            <div class="tab-pane php" data-youtube-id="lRy3qb-x2Yc">
+                <div class="code">
+                    {{ 'gfm/php.md' |> githubMarkdown }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{{#raw appendTo scripts}}
+
+<script>
+    function log(a) {
+        console.log(a);
+        return a;
+    }
+    function parent(el,cls) {
+        while (el != null && !el.classList.contains(cls))
+            el = el.parentElement;
+        return el;
+    }
+    function youtubeVideo(id) {
+        return '<iframe class="video" src="https://www.youtube.com/embed/' + id + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+    }
+    
+    bindHandlers({
+        tab: function(tab) {
+            var tabs = parent(this,'nav-tabs');
+            tabs.querySelectorAll('.tab,.tab-pane').forEach(function(el) {
+                if (el.classList.contains(tab)) {
+                    el.classList.add('active');
+                    var id = el.getAttribute('data-youtube-id');
+                    if (id) {
+                        tabs.querySelector('.youtube').innerHTML = youtubeVideo(id);
+                    }
+                }
+                else {
+                    el.classList.remove('active');
+                }
+            });
+            
+            document.querySelector('.tab-pane.' + tab);
+            window.location.hash = tab;
+        }
+    });
+
+    document.querySelector('.generic .youtube').innerHTML = youtubeVideo('K0QAUQPJNtM');
+    document.querySelector('.protoc .youtube').innerHTML = youtubeVideo('0TXk9y24NIw');
+    
+    var activeTab = location.hash
+        ? document.querySelector('.tabs .' + location.hash.substring(1))
+        : null;
+    if (activeTab) {
+        activeTab.click();
+    }
+</script>
 
 {{/raw}}

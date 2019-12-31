@@ -1,13 +1,24 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Security;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Funq;
+using Grpc.Core;
+using Grpc.Net.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using ServiceStack;
 using NUnit.Framework;
 using TodoWorld.ServiceInterface;
 using TodoWorld.ServiceModel;
 using ProtoBuf.Grpc.Client;
+using ServiceStack.Text;
 
 namespace TodoWorld.Tests
 {
@@ -58,11 +69,66 @@ namespace TodoWorld.Tests
         [OneTimeTearDown]
         public void OneTimeTearDown() => appHost.Dispose();
 
-        [Test] // Requires Host project running on https://localhost:5001 (default)
-        public async Task Can_GET_Hello_WebHost()
+        [Test] // Requires Host project running on http://localhost:5002 (HTTP2) 
+        public async Task Can_GET_Hello_WebHost_Insecure()
         {
-            var client = new GrpcServiceClient("https://localhost:5001");
+            var client = new GrpcServiceClient("http://localhost:5002");
 
+            var response = await client.GetAsync(new Hello { Name = "World" });
+
+            Assert.That(response.Result, Is.EqualTo("Hello, World!"));
+        }
+
+        [Test] // Requires Host project running on https://localhost:5001 (HTTP2 SSL) 
+        public async Task Can_GET_Hello_WebHost_Secure()
+        {
+            var client = new GrpcServiceClient(GrpcChannel.ForAddress("https://localhost:5001", new GrpcChannelOptions
+            {
+                HttpClient = new HttpClient(new HttpClientHandler()
+                    .AddPemCertificateFromFile("../../../../clients/certs/dev.crt")
+                    .AllowSelfSignedCertificatesFrom("localhost")),
+            }));
+                
+            var response = await client.GetAsync(new Hello { Name = "World" });
+
+            Assert.That(response.Result, Is.EqualTo("Hello, World!"));
+        }
+
+        [Test] 
+        public async Task Can_GET_Hello_TodoWorld_Insecure()
+        {
+            var client = new GrpcServiceClient("http://todoworld.servicestack.net:5054");
+
+            var response = await client.GetAsync(new Hello { Name = "World" });
+
+            Assert.That(response.Result, Is.EqualTo("Hello, World!"));
+        }
+
+        [Test] 
+        public async Task Can_GET_Hello_TodoWorld_Secure()
+        {
+            var client = new GrpcServiceClient(GrpcChannel.ForAddress("https://todoworld.servicestack.net:50051", new GrpcChannelOptions
+            {
+                HttpClient = new HttpClient(new HttpClientHandler()
+                    .AddPemCertificateFromFile("../../../../clients/certs/prod.crt")
+                    .AllowSelfSignedCertificatesFrom("todoworld.servicestack.net")),
+            }));
+                
+            var response = await client.GetAsync(new Hello { Name = "World" });
+
+            Assert.That(response.Result, Is.EqualTo("Hello, World!"));
+        }
+
+        [Test] 
+        public async Task Can_GET_Hello_TodoWorld_Secure_grpc()
+        {
+            var client = new GrpcServiceClient(GrpcChannel.ForAddress("https://todoworld.servicestack.net:50052", new GrpcChannelOptions
+            {
+                HttpClient = new HttpClient(new HttpClientHandler()
+                    .AddPemCertificateFromFile("../../../../clients/certs/prod.crt")
+                    .AllowSelfSignedCertificatesFrom("todoworld.servicestack.net")),
+            }));
+                
             var response = await client.GetAsync(new Hello { Name = "World" });
 
             Assert.That(response.Result, Is.EqualTo("Hello, World!"));

@@ -47,7 +47,11 @@ namespace TodoWorld
                 DebugMode = AppSettings.Get(nameof(HostConfig.DebugMode), false)
             });
 
-            Plugins.Add(new SharpPagesFeature());
+            Plugins.Add(new SharpPagesFeature {
+                ScriptMethods = {
+                    new GitHubMarkdownScripts()
+                }
+            });
             Plugins.Add(new ValidationFeature());
             Plugins.Add(new ServerEventsFeature());
             Plugins.Add(new GrpcFeature(App));

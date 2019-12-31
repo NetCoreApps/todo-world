@@ -22,7 +22,6 @@ repositories {
 def grpcVersion = '1.25.0' // CURRENT_GRPC_VERSION
 def nettyTcNativeVersion = '2.0.26.Final'
 def protobufVersion = '3.11.0'
-def protocVersion = protobufVersion
 
 dependencies {
     implementation "io.grpc:grpc-netty:${grpcVersion}"

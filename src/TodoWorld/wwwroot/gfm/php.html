@@ -1,0 +1,106 @@
+<div class="gfm"><h2>
+<a id="user-content-php-google-protoc-generated-grpcserviceclient-example" class="anchor" href="#php-google-protoc-generated-grpcserviceclient-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PHP Google protoc generated GrpcServiceClient Example</h2>
+<h3>
+<a id="user-content-prerequisites" class="anchor" href="#prerequisites" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Prerequisites</h3>
+<p>This requires <code>php</code> &gt;= 5.5, <code>pecl</code>, <code>composer</code></p>
+<p>Install the <code>grpc</code> extension:</p>
+<pre><code>$ [sudo] pecl install grpc
+</code></pre>
+<h3>
+<a id="user-content-setup-for-windows" class="anchor" href="#setup-for-windows" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup for Windows</h3>
+<h4>
+<a id="user-content-grpc-pecl-download-for-windows" class="anchor" href="#grpc-pecl-download-for-windows" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>gRPC PECL Download for Windows</h4>
+<p><a href="https://windows.php.net/downloads/pecl/releases/grpc/" rel="nofollow">https://windows.php.net/downloads/pecl/releases/grpc/</a></p>
+<p>The PHP extension filename is in the following format:</p>
+<pre><code>php_grpc-{GRPC_VERSION}-{PHP_VERSION}-{THREAD_SAFETY}-{VC++_RUNTIME}-{CPU_ARCH}.zip
+</code></pre>
+<p>Select appropriate version for your OS and copy to <code>{PHP_HOME}\ext</code>, then modify your <strong>php.ini</strong> file to include <code>extension=grpc</code>.</p>
+<h3>
+<a id="user-content-getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting Started</h3>
+<p>Install <a href="https://docs.servicestack.net/web-tool" rel="nofollow">x dotnet tool</a>:</p>
+<pre><code>$ dotnet tool install --global x 
+</code></pre>
+<p>Add required dependencies to <strong>composer.json</strong>:</p>
+<div class="highlight highlight-source-json"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>servicestack/grpc-todoworld<span class="pl-pds">"</span></span>,
+  <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Simple TodoWorld demo of using gRPC from PHP<span class="pl-pds">"</span></span>,
+  <span class="pl-s"><span class="pl-pds">"</span>require<span class="pl-pds">"</span></span>: {
+    <span class="pl-s"><span class="pl-pds">"</span>grpc/grpc<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>^v1.3.0<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>google/protobuf<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>^v3.3.0<span class="pl-pds">"</span></span>
+  },
+  <span class="pl-s"><span class="pl-pds">"</span>autoload<span class="pl-pds">"</span></span>: {
+    <span class="pl-s"><span class="pl-pds">"</span>psr-4<span class="pl-pds">"</span></span>: {
+      <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>route_guide/<span class="pl-pds">"</span></span>
+    }
+  }
+}</pre></div>
+<p>Install dependencies:</p>
+<pre><code>$ composer install
+</code></pre>
+<p>Add protoc generated TodoWorld DTOs and gRPC GrpcServiceClient:</p>
+<pre><code>$ x proto-php https://todoworld.servicestack.net
+</code></pre>
+<h3>
+<a id="user-content-php-protoc-grpc-insecure-example" class="anchor" href="#php-protoc-grpc-insecure-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PHP protoc gRPC insecure Example</h3>
+<p>Use protoc generated DTOs and <code>GrpcServiceClient</code> to call TodoWorld gRPC Service in <code>main.php</code>:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-pse">&lt;?php</span><span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">require</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/vendor/autoload.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/GPBMetadata/Services.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/GrpcServicesClient.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/Hello.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/HelloResponse.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$client</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">TodoWorld\</span><span class="pl-c1">GrpcServicesClient</span>(<span class="pl-s"><span class="pl-pds">'</span>todoworld.servicestack.net:5054<span class="pl-pds">'</span></span>, [</span>
+<span class="pl-s1">    <span class="pl-s"><span class="pl-pds">'</span>credentials<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">Grpc\</span><span class="pl-c1">ChannelCredentials</span><span class="pl-k">::</span>createInsecure(),</span>
+<span class="pl-s1">]);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$request</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">TodoWorld\</span><span class="pl-c1">Hello</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$request</span><span class="pl-k">-&gt;</span>setName(<span class="pl-s"><span class="pl-pds">"</span>gRPC PHP<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$reply</span>, <span class="pl-smi">$status</span>) <span class="pl-k">=</span> <span class="pl-smi">$client</span><span class="pl-k">-&gt;</span>GetHello(<span class="pl-smi">$request</span>)<span class="pl-k">-&gt;</span>wait();</span>
+<span class="pl-s1"><span class="pl-k">if</span> (<span class="pl-smi">$status</span><span class="pl-k">-&gt;</span><span class="pl-smi">code</span> <span class="pl-k">!</span><span class="pl-k">==</span> <span class="pl-c1">Grpc\</span><span class="pl-c1">STATUS_OK</span>) {</span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>Call did not complete successfully. Status object:<span class="pl-cce">\n</span><span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    <span class="pl-c1">var_dump</span>(<span class="pl-smi">$status</span>);</span>
+<span class="pl-s1">    <span class="pl-k">exit</span>(<span class="pl-c1">1</span>);</span>
+<span class="pl-s1">}</span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$reply</span><span class="pl-k">-&gt;</span>getResult();</span></pre></div>
+<p>Override <code>main.php</code> with the above PHP Example:</p>
+<pre><code>$ x mix todoworld-php
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ php main.php
+</code></pre>
+<h3>
+<a id="user-content-php-protoc-grpc-ssl-example" class="anchor" href="#php-protoc-grpc-ssl-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PHP protoc gRPC SSL Example</h3>
+<p>Download TodoWorld SSL Certificate used for its gRPC HTTP/2 Services:</p>
+<pre><code>$ x get https://todoworld.servicestack.net/grpc.crt 
+</code></pre>
+<p>Use certificate when initializing <code>GrpcServicesClient</code>:</p>
+<div class="highlight highlight-text-html-php"><pre><span class="pl-pse">&lt;?php</span><span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">require</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/vendor/autoload.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/GPBMetadata/Services.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/GrpcServicesClient.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/Hello.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">@</span><span class="pl-k">include_once</span> <span class="pl-c1">dirname</span>(<span class="pl-c1">__FILE__</span>)<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>/TodoWorld/HelloResponse.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$client</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">TodoWorld\</span><span class="pl-c1">GrpcServicesClient</span>(<span class="pl-s"><span class="pl-pds">'</span>todoworld.servicestack.net:50051<span class="pl-pds">'</span></span>, [</span>
+<span class="pl-s1">    <span class="pl-s"><span class="pl-pds">'</span>credentials<span class="pl-pds">'</span></span> <span class="pl-k">=&gt;</span> <span class="pl-c1">Grpc\</span><span class="pl-c1">ChannelCredentials</span><span class="pl-k">::</span>createSsl(<span class="pl-c1">file_get_contents</span>(<span class="pl-s"><span class="pl-pds">'</span>grpc.crt<span class="pl-pds">'</span></span>)),</span>
+<span class="pl-s1">]);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$request</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">TodoWorld\</span><span class="pl-c1">Hello</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$request</span><span class="pl-k">-&gt;</span>setName(<span class="pl-s"><span class="pl-pds">"</span>gRPC PHP<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1"><span class="pl-c1">list</span>(<span class="pl-smi">$reply</span>, <span class="pl-smi">$status</span>) <span class="pl-k">=</span> <span class="pl-smi">$client</span><span class="pl-k">-&gt;</span>GetHello(<span class="pl-smi">$request</span>)<span class="pl-k">-&gt;</span>wait();</span>
+<span class="pl-s1"><span class="pl-k">if</span> (<span class="pl-smi">$status</span><span class="pl-k">-&gt;</span><span class="pl-smi">code</span> <span class="pl-k">!</span><span class="pl-k">==</span> <span class="pl-c1">Grpc\</span><span class="pl-c1">STATUS_OK</span>) {</span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>Call did not complete successfully. Status object:<span class="pl-cce">\n</span><span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    <span class="pl-c1">var_dump</span>(<span class="pl-smi">$status</span>);</span>
+<span class="pl-s1">    <span class="pl-k">exit</span>(<span class="pl-c1">1</span>);</span>
+<span class="pl-s1">}</span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-smi">$reply</span><span class="pl-k">-&gt;</span>getResult();</span></pre></div>
+<p>Override <code>main.php</code> with the above PHP Example:</p>
+<pre><code>$ x mix todoworld-php-ssl
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ php main.php
+</code></pre>
+</div>

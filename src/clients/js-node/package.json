@@ -1,7 +1,7 @@
 {
-  "name": "grpc-node-todoworld",
+  "name": "todoworld-grpc",
   "version": "0.1.0",
-  "description": "gRPC node.js Todo World",
+  "description": "gRPC node.js Todo World Example",
   "devDependencies": {
     "@grpc/proto-loader": "^0.1.0",
     "google-protobuf": "^3.6.1",

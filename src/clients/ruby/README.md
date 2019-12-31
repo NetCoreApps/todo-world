@@ -10,7 +10,7 @@ Generate Ruby gRPC Client
 
 ### Setup
 
-    $ gem install grpc    
+    $ gem install grpc bundler 
     $ gem install bundler # if you don't already have bundler available
     $ bundle install
 

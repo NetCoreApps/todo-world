@@ -1,0 +1,108 @@
+<div class="gfm"><h2>
+<a id="user-content-nodejs-google-protoc-generated-grpcservicesstub-client-example" class="anchor" href="#nodejs-google-protoc-generated-grpcservicesstub-client-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Node.js Google protoc generated GrpcServicesStub Client Example</h2>
+<p>Install <a href="https://docs.servicestack.net/web-tool" rel="nofollow">x dotnet tool</a>:</p>
+<pre><code>$ dotnet tool install --global x 
+</code></pre>
+<p>Create npm <strong>package.json</strong>:</p>
+<pre><code>$ npm init
+</code></pre>
+<p>Add dependencies:</p>
+<div class="highlight highlight-source-json"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>todoworld-grpc<span class="pl-pds">"</span></span>,
+  <span class="pl-s"><span class="pl-pds">"</span>version<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>0.1.0<span class="pl-pds">"</span></span>,
+  <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>gRPC node.js Todo World Example<span class="pl-pds">"</span></span>,
+  <span class="pl-s"><span class="pl-pds">"</span>devDependencies<span class="pl-pds">"</span></span>: {
+    <span class="pl-s"><span class="pl-pds">"</span>@grpc/proto-loader<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>^0.1.0<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>google-protobuf<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>^3.6.1<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>grpc<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>^1.11.0<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>webpack<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>^4.16.5<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>webpack-cli<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>^3.1.0<span class="pl-pds">"</span></span>
+  }
+}</pre></div>
+<p>Install dependencies:</p>
+<pre><code>$ npm install
+</code></pre>
+<p>Add protoc generated TodoWorld DTOs and gRPC Service Client:</p>
+<pre><code>$ x proto-js-node https://todoworld.servicestack.net
+</code></pre>
+<h3>
+<a id="user-content-nodejs-protoc-grpc-insecure-example" class="anchor" href="#nodejs-protoc-grpc-insecure-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Node.js protoc gRPC insecure Example</h3>
+<p>Use protoc generated DTOs and <code>GrpcServicesClient</code> to call TodoWorld gRPC Service in <code>index.js</code>:</p>
+<div class="highlight highlight-source-js"><pre><span class="pl-k">const</span> { <span class="pl-c1">Hello</span> } <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>./services_pb.js<span class="pl-pds">'</span></span>);
+<span class="pl-k">const</span> { <span class="pl-c1">GrpcServicesClient</span> } <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>./services_grpc_pb.js<span class="pl-pds">'</span></span>);
+<span class="pl-k">const</span> <span class="pl-c1">grpc</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>grpc<span class="pl-pds">'</span></span>);
+<span class="pl-k">const</span> { <span class="pl-c1">promisify</span> } <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>util<span class="pl-pds">'</span></span>);
+
+<span class="pl-k">async</span> <span class="pl-k">function</span> <span class="pl-en">main</span>() {
+
+    <span class="pl-k">const</span> <span class="pl-c1">client</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">GrpcServicesClient</span>(<span class="pl-s"><span class="pl-pds">'</span>todoworld.servicestack.net:5054<span class="pl-pds">'</span></span>, 
+        <span class="pl-smi">grpc</span>.<span class="pl-smi">credentials</span>.<span class="pl-en">createInsecure</span>());
+
+    <span class="pl-c"><span class="pl-c">//</span> Convert gRPC's callback APIs to await friendly promises</span>
+    <span class="pl-k">const</span> { <span class="pl-c1">getHello</span> } <span class="pl-k">=</span> <span class="pl-en">promisifyAll</span>(client);
+    
+    <span class="pl-k">let</span> request <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Hello</span>();
+    <span class="pl-smi">request</span>.<span class="pl-en">setName</span>(<span class="pl-s"><span class="pl-pds">"</span>gRPC Node.js<span class="pl-pds">"</span></span>);
+    <span class="pl-k">let</span> response <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-en">getHello</span>(request);
+    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-smi">response</span>.<span class="pl-en">getResult</span>());
+}
+
+<span class="pl-k">function</span> <span class="pl-en">promisifyAll</span>(<span class="pl-smi">client</span>) {
+    <span class="pl-k">const</span> <span class="pl-c1">to</span> <span class="pl-k">=</span> {};
+    <span class="pl-k">for</span> (<span class="pl-k">var</span> k <span class="pl-k">in</span> client) {
+        <span class="pl-k">if</span> (<span class="pl-k">typeof</span> client[k] <span class="pl-k">!=</span> <span class="pl-s"><span class="pl-pds">'</span>function<span class="pl-pds">'</span></span>) <span class="pl-k">continue</span>;
+        to[k] <span class="pl-k">=</span> <span class="pl-en">promisify</span>(client[k].<span class="pl-en">bind</span>(client));
+    }
+    <span class="pl-k">return</span> to;
+}
+
+<span class="pl-en">main</span>();</pre></div>
+<p>Create <code>index.js</code> with the above Node.js Example:</p>
+<pre><code>$ x mix todoworld-node
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ node --no-deprecation index.js
+</code></pre>
+<h3>
+<a id="user-content-nodejs-protoc-grpc-ssl-example" class="anchor" href="#nodejs-protoc-grpc-ssl-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Node.js protoc gRPC SSL Example</h3>
+<p>Download TodoWorld SSL Certificate used for its gRPC HTTP/2 Services:</p>
+<pre><code>$ x get https://todoworld.servicestack.net/grpc.crt 
+</code></pre>
+<p>Use certificate when initializing <code>GrpcServicesClient</code>:</p>
+<div class="highlight highlight-source-js"><pre><span class="pl-k">const</span> { <span class="pl-c1">Hello</span> } <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>./services_pb.js<span class="pl-pds">'</span></span>);
+<span class="pl-k">const</span> { <span class="pl-c1">GrpcServicesClient</span> } <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>./services_grpc_pb.js<span class="pl-pds">'</span></span>);
+<span class="pl-k">const</span> <span class="pl-c1">grpc</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>grpc<span class="pl-pds">'</span></span>);
+<span class="pl-k">const</span> { <span class="pl-c1">promisify</span> } <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>util<span class="pl-pds">'</span></span>);
+<span class="pl-k">const</span> <span class="pl-c1">fs</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>fs<span class="pl-pds">'</span></span>);
+
+<span class="pl-k">async</span> <span class="pl-k">function</span> <span class="pl-en">main</span>() {
+
+    <span class="pl-k">const</span> <span class="pl-c1">client</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">GrpcServicesClient</span>(<span class="pl-s"><span class="pl-pds">'</span>todoworld.servicestack.net:50051<span class="pl-pds">'</span></span>, 
+        <span class="pl-smi">grpc</span>.<span class="pl-smi">credentials</span>.<span class="pl-en">createSsl</span>(<span class="pl-smi">fs</span>.<span class="pl-en">readFileSync</span>(<span class="pl-s"><span class="pl-pds">'</span>grpc.crt<span class="pl-pds">'</span></span>)));
+
+    <span class="pl-c"><span class="pl-c">//</span> Convert gRPC's callback APIs to await friendly promises</span>
+    <span class="pl-k">const</span> { <span class="pl-c1">getHello</span> } <span class="pl-k">=</span> <span class="pl-en">promisifyAll</span>(client);
+    
+    <span class="pl-k">let</span> request <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Hello</span>();
+    <span class="pl-smi">request</span>.<span class="pl-en">setName</span>(<span class="pl-s"><span class="pl-pds">"</span>gRPC Node.js<span class="pl-pds">"</span></span>);
+    <span class="pl-k">let</span> response <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-en">getHello</span>(request);
+    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(<span class="pl-smi">response</span>.<span class="pl-en">getResult</span>());
+}
+
+<span class="pl-k">function</span> <span class="pl-en">promisifyAll</span>(<span class="pl-smi">client</span>) {
+    <span class="pl-k">const</span> <span class="pl-c1">to</span> <span class="pl-k">=</span> {};
+    <span class="pl-k">for</span> (<span class="pl-k">var</span> k <span class="pl-k">in</span> client) {
+        <span class="pl-k">if</span> (<span class="pl-k">typeof</span> client[k] <span class="pl-k">!=</span> <span class="pl-s"><span class="pl-pds">'</span>function<span class="pl-pds">'</span></span>) <span class="pl-k">continue</span>;
+        to[k] <span class="pl-k">=</span> <span class="pl-en">promisify</span>(client[k].<span class="pl-en">bind</span>(client));
+    }
+    <span class="pl-k">return</span> to;
+}
+
+<span class="pl-en">main</span>();</pre></div>
+<p>Override <code>index.js</code> with the above Node.js Example:</p>
+<pre><code>$ x mix todoworld-node-ssl
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ node --no-deprecation index.js
+</code></pre>
+</div>

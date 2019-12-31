@@ -9,7 +9,8 @@ namespace CSharp
     {
         static async Task Main(string[] args)
         {
-            var client = new GrpcServices.GrpcServicesClient(GrpcChannel.ForAddress("https://localhost:5001"));
+            var client = new GrpcServices.GrpcServicesClient(GrpcChannel.ForAddress("https://localhost:5002"));
+
             await client.PostResetTodosAsync(new ResetTodos());
 
             //POST /todos

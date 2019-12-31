@@ -1,0 +1,78 @@
+<div class="gfm"><h2>
+<a id="user-content-vbnet-generic-grpcserviceclient-example" class="anchor" href="#vbnet-generic-grpcserviceclient-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>VB.NET Generic GrpcServiceClient Example</h2>
+<p>Install <a href="https://docs.servicestack.net/web-tool" rel="nofollow">x dotnet tool</a>:</p>
+<pre><code>$ dotnet tool install --global x 
+</code></pre>
+<p>Create a new VB.NET App:</p>
+<pre><code>$ dotnet new console -lang vb
+</code></pre>
+<p>Add <a href="https://www.nuget.org/packages/ServiceStack.GrpcClient" rel="nofollow">ServiceStack.GrpcClient</a> NuGet Package:</p>
+<pre><code>$ dotnet add package ServiceStack.GrpcClient
+</code></pre>
+<p>Add TodoWorld DTOs:</p>
+<pre><code>$ x vb https://todoworld.servicestack.net
+</code></pre>
+<p>Use TodoWorld DTOs with generic <code>GrpcServiceClient</code> to call TodoWorld gRPC Service:</p>
+<h3>
+<a id="user-content-vbnet-grpc-insecure-example" class="anchor" href="#vbnet-grpc-insecure-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>VB.NET gRPC insecure Example</h3>
+<div class="highlight highlight-source-vbnet"><pre><span class="pl-k">Imports</span> <span class="pl-smi">System</span>
+<span class="pl-k">Imports</span> <span class="pl-smi">System.Collections.Generic</span>
+<span class="pl-k">Imports</span> <span class="pl-smi">System.Threading.Tasks</span>
+<span class="pl-k">Imports</span> <span class="pl-smi">ServiceStack</span>
+<span class="pl-k">Imports</span> <span class="pl-smi">TodoWorld.ServiceModel</span>
+
+<span class="pl-k">Module</span> <span class="pl-smi">Program</span>
+
+    <span class="pl-k">Async</span> <span class="pl-k">Function</span> <span class="pl-smi">Todo()</span> <span class="pl-k">As</span> <span class="pl-smi">Task</span>
+        <span class="pl-smi">ProtoBuf.Grpc.Client.GrpcClientFactory.AllowUnencryptedHttp2</span> <span class="pl-smi">=</span> <span class="pl-k">true</span>
+        <span class="pl-k">Dim</span> <span class="pl-smi">client</span> <span class="pl-smi">=</span> <span class="pl-k">new</span> <span class="pl-smi">GrpcServiceClient(</span><span class="pl-s">"http://todoworld.servicestack.net:5054"</span><span class="pl-smi">)</span>
+        
+        <span class="pl-k">Dim</span> <span class="pl-smi">response</span> <span class="pl-smi">=</span> <span class="pl-k">Await</span> <span class="pl-smi">client.GetAsync(</span><span class="pl-k">New</span> <span class="pl-smi">Hello</span> <span class="pl-k">With</span> <span class="pl-smi">{</span> <span class="pl-smi">.Name</span> <span class="pl-smi">=</span> <span class="pl-s">"gRPC VB.NET"</span> <span class="pl-smi">})</span>
+
+        <span class="pl-smi">Console.WriteLine(response.Result)</span>
+    <span class="pl-k">End</span> <span class="pl-k">Function</span>
+
+    <span class="pl-k">Sub</span> <span class="pl-smi">Main(args</span> <span class="pl-k">As</span> <span class="pl-k">String</span><span class="pl-smi">())</span>
+        <span class="pl-smi">Task.WaitAll(Todo())</span>
+    <span class="pl-k">End</span> <span class="pl-k">Sub</span>
+
+<span class="pl-k">End</span> <span class="pl-k">Module</span></pre></div>
+<p>Override <code>Program.vb</code> with the above VB.NET Example:</p>
+<pre><code>$ x mix todoworld-vb
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ dotnet run
+</code></pre>
+<h3>
+<a id="user-content-vbnet-grpc-ssl-example" class="anchor" href="#vbnet-grpc-ssl-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>VB.NET gRPC SSL Example</h3>
+<div class="highlight highlight-source-vbnet"><pre><span class="pl-k">Imports</span> <span class="pl-smi">System</span>
+<span class="pl-k">Imports</span> <span class="pl-smi">System.Collections.Generic</span>
+<span class="pl-k">Imports</span> <span class="pl-smi">System.Threading.Tasks</span>
+<span class="pl-k">Imports</span> <span class="pl-smi">System.Security.Cryptography.X509Certificates</span>
+<span class="pl-k">Imports</span> <span class="pl-smi">ServiceStack</span>
+<span class="pl-k">Imports</span> <span class="pl-smi">TodoWorld.ServiceModel</span>
+
+<span class="pl-k">Module</span> <span class="pl-smi">Program</span>
+
+    <span class="pl-k">Async</span> <span class="pl-k">Function</span> <span class="pl-smi">Todo()</span> <span class="pl-k">As</span> <span class="pl-smi">Task</span>
+        <span class="pl-k">Dim</span> <span class="pl-smi">client</span> <span class="pl-smi">=</span> <span class="pl-k">new</span> <span class="pl-smi">GrpcServiceClient(</span><span class="pl-s">"https://todoworld.servicestack.net:50051"</span><span class="pl-smi">,</span> 
+                <span class="pl-k">new</span> <span class="pl-smi">X509Certificate2(</span><span class="pl-s">"https://todoworld.servicestack.net/grpc.crt"</span><span class="pl-smi">.GetBytesFromUrl()),</span> 
+                <span class="pl-smi">GrpcUtils.AllowSelfSignedCertificatesFrom(</span><span class="pl-s">"todoworld.servicestack.net"</span><span class="pl-smi">))</span>
+        
+        <span class="pl-k">Dim</span> <span class="pl-smi">response</span> <span class="pl-smi">=</span> <span class="pl-k">Await</span> <span class="pl-smi">client.GetAsync(</span><span class="pl-k">New</span> <span class="pl-smi">Hello</span> <span class="pl-k">With</span> <span class="pl-smi">{</span> <span class="pl-smi">.Name</span> <span class="pl-smi">=</span> <span class="pl-s">"gRPC VB.NET"</span> <span class="pl-smi">})</span>
+
+        <span class="pl-smi">Console.WriteLine(response.Result)</span>
+    <span class="pl-k">End</span> <span class="pl-k">Function</span>
+
+    <span class="pl-k">Sub</span> <span class="pl-smi">Main(args</span> <span class="pl-k">As</span> <span class="pl-k">String</span><span class="pl-smi">())</span>
+        <span class="pl-smi">Task.WaitAll(Todo())</span>
+    <span class="pl-k">End</span> <span class="pl-k">Sub</span>
+
+<span class="pl-k">End</span> <span class="pl-k">Module</span></pre></div>
+<p>Override <code>Program.vb</code> with the above VB.NET Example:</p>
+<pre><code>$ x mix todoworld-vb-ssl
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ dotnet run
+</code></pre>
+</div>

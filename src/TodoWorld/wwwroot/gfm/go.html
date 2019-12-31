@@ -1,0 +1,102 @@
+<div class="gfm"><h2>
+<a id="user-content-go-google-protoc-generated-grpcserviceclient-example" class="anchor" href="#go-google-protoc-generated-grpcserviceclient-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Go Google protoc generated GrpcServiceClient Example</h2>
+<p>Install <a href="https://docs.servicestack.net/web-tool" rel="nofollow">x dotnet tool</a>:</p>
+<pre><code>$ dotnet tool install --global x 
+</code></pre>
+<p>Create new <strong>TodoWorld</strong> Go module:</p>
+<pre><code>$ go mod init TodoWorld
+</code></pre>
+<p>Add protoc generated TodoWorld DTOs and gRPC GrpcServiceClient to <code>services/</code> folder:</p>
+<pre><code>$ md services
+$ x proto-go https://todoworld.servicestack.net -out services
+</code></pre>
+<h3>
+<a id="user-content-go-protoc-grpc-insecure-example" class="anchor" href="#go-protoc-grpc-insecure-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Go protoc gRPC insecure Example</h3>
+<p>Create a new Go Console App in <code>client\main.go</code>:</p>
+<div class="highlight highlight-source-go"><pre><span class="pl-k">package</span> main
+
+<span class="pl-k">import</span> (
+	context <span class="pl-s"><span class="pl-pds">"</span>context<span class="pl-pds">"</span></span>
+	<span class="pl-s"><span class="pl-pds">"</span>fmt<span class="pl-pds">"</span></span>
+	<span class="pl-s"><span class="pl-pds">"</span>log<span class="pl-pds">"</span></span>
+
+	<span class="pl-s"><span class="pl-pds">"</span>google.golang.org/grpc<span class="pl-pds">"</span></span>
+
+	pb <span class="pl-s"><span class="pl-pds">"</span>TodoWorld/services<span class="pl-pds">"</span></span>
+	<span class="pl-s"><span class="pl-pds">"</span>time<span class="pl-pds">"</span></span>
+)
+
+<span class="pl-k">func</span> <span class="pl-en">main</span>() {
+	<span class="pl-smi">conn</span>, <span class="pl-smi">err</span> <span class="pl-k">:=</span> grpc.<span class="pl-c1">Dial</span>(<span class="pl-s"><span class="pl-pds">"</span>todoworld.servicestack.net:5054<span class="pl-pds">"</span></span>, grpc.<span class="pl-c1">WithInsecure</span>())
+	<span class="pl-k">if</span> err != <span class="pl-c1">nil</span> {
+		log.<span class="pl-c1">Fatalf</span>(<span class="pl-s"><span class="pl-pds">"</span>fail to dial: <span class="pl-c1">%v</span><span class="pl-pds">"</span></span>, err)
+	}
+	<span class="pl-k">defer</span> conn.<span class="pl-c1">Close</span>()
+
+	<span class="pl-smi">client</span> <span class="pl-k">:=</span> pb.<span class="pl-c1">NewGrpcServicesClient</span>(conn)
+	<span class="pl-smi">ctx</span>, <span class="pl-smi">cancel</span> <span class="pl-k">:=</span> context.<span class="pl-c1">WithTimeout</span>(context.<span class="pl-c1">Background</span>(), time.<span class="pl-smi">Second</span>)
+	<span class="pl-k">defer</span> <span class="pl-c1">cancel</span>()
+
+	<span class="pl-smi">response</span>, <span class="pl-smi">err</span> <span class="pl-k">:=</span> client.<span class="pl-c1">GetHello</span>(ctx, &amp;pb.<span class="pl-smi">Hello</span>{Name: <span class="pl-s"><span class="pl-pds">"</span>gRPC Go<span class="pl-pds">"</span></span>})
+	<span class="pl-k">if</span> err != <span class="pl-c1">nil</span> {
+		log.<span class="pl-c1">Fatalf</span>(<span class="pl-s"><span class="pl-pds">"</span>GetHello: <span class="pl-c1">%v</span><span class="pl-pds">"</span></span>, err)
+	}
+	fmt.<span class="pl-c1">Println</span>(response.<span class="pl-smi">Result</span>)
+}</pre></div>
+<p>Alternatively above Go example can be created with:</p>
+<pre><code>$ md client
+$ x mix todoworld-go -out client
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ go run client\main.go
+</code></pre>
+<h3>
+<a id="user-content-go-protoc-grpc-ssl-example" class="anchor" href="#go-protoc-grpc-ssl-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Go protoc gRPC SSL Example</h3>
+<p>Download TodoWorld SSL Certificate used for its gRPC HTTP/2 Services:</p>
+<pre><code>$ x get https://todoworld.servicestack.net/grpc.crt 
+</code></pre>
+<p>Use certificate when initializing <code>NewGrpcServicesClient</code>:</p>
+<div class="highlight highlight-source-go"><pre>
+<span class="pl-k">package</span> main
+
+<span class="pl-k">import</span> (
+	context <span class="pl-s"><span class="pl-pds">"</span>context<span class="pl-pds">"</span></span>
+	<span class="pl-s"><span class="pl-pds">"</span>fmt<span class="pl-pds">"</span></span>
+	<span class="pl-s"><span class="pl-pds">"</span>log<span class="pl-pds">"</span></span>
+
+	<span class="pl-s"><span class="pl-pds">"</span>google.golang.org/grpc<span class="pl-pds">"</span></span>
+	<span class="pl-s"><span class="pl-pds">"</span>google.golang.org/grpc/credentials<span class="pl-pds">"</span></span>
+
+	pb <span class="pl-s"><span class="pl-pds">"</span>TodoWorld/services<span class="pl-pds">"</span></span>
+	<span class="pl-s"><span class="pl-pds">"</span>time<span class="pl-pds">"</span></span>
+)
+
+<span class="pl-k">func</span> <span class="pl-en">main</span>() {
+	<span class="pl-smi">creds</span>, <span class="pl-smi">err</span> <span class="pl-k">:=</span> credentials.<span class="pl-c1">NewClientTLSFromFile</span>(<span class="pl-s"><span class="pl-pds">"</span>grpc.crt<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>)
+	<span class="pl-k">if</span> err != <span class="pl-c1">nil</span> {
+		log.<span class="pl-c1">Fatalf</span>(<span class="pl-s"><span class="pl-pds">"</span>could not process the credentials: <span class="pl-c1">%v</span><span class="pl-pds">"</span></span>, err)
+	}
+
+	<span class="pl-smi">conn</span>, <span class="pl-smi">err</span> <span class="pl-k">:=</span> grpc.<span class="pl-c1">Dial</span>(<span class="pl-s"><span class="pl-pds">"</span>todoworld.servicestack.net:50051<span class="pl-pds">"</span></span>, grpc.<span class="pl-c1">WithTransportCredentials</span>(creds))
+	<span class="pl-k">if</span> err != <span class="pl-c1">nil</span> {
+		log.<span class="pl-c1">Fatalf</span>(<span class="pl-s"><span class="pl-pds">"</span>fail to dial: <span class="pl-c1">%v</span><span class="pl-pds">"</span></span>, err)
+	}
+	<span class="pl-k">defer</span> conn.<span class="pl-c1">Close</span>()
+
+	<span class="pl-smi">client</span> <span class="pl-k">:=</span> pb.<span class="pl-c1">NewGrpcServicesClient</span>(conn)
+	<span class="pl-smi">ctx</span>, <span class="pl-smi">cancel</span> <span class="pl-k">:=</span> context.<span class="pl-c1">WithTimeout</span>(context.<span class="pl-c1">Background</span>(), time.<span class="pl-smi">Second</span>)
+	<span class="pl-k">defer</span> <span class="pl-c1">cancel</span>()
+
+	<span class="pl-smi">response</span>, <span class="pl-smi">err</span> <span class="pl-k">:=</span> client.<span class="pl-c1">GetHello</span>(ctx, &amp;pb.<span class="pl-smi">Hello</span>{Name: <span class="pl-s"><span class="pl-pds">"</span>gRPC Go<span class="pl-pds">"</span></span>})
+	<span class="pl-k">if</span> err != <span class="pl-c1">nil</span> {
+		log.<span class="pl-c1">Fatalf</span>(<span class="pl-s"><span class="pl-pds">"</span>GetHello: <span class="pl-c1">%v</span><span class="pl-pds">"</span></span>, err)
+	}
+	fmt.<span class="pl-c1">Println</span>(response.<span class="pl-smi">Result</span>)
+}</pre></div>
+<p>Override <code>client/main.go</code> with the above Go Example:</p>
+<pre><code>$ x mix todoworld-go-ssl -out client
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ go run client\main.go
+</code></pre>
+</div>

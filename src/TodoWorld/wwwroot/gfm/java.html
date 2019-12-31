@@ -1,0 +1,106 @@
+<div class="gfm"><h2>
+<a id="user-content-java-google-protoc-generated-grpcserviceclient-example" class="anchor" href="#java-google-protoc-generated-grpcserviceclient-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Java Google protoc generated GrpcServiceClient Example</h2>
+<p>Install <a href="https://docs.servicestack.net/web-tool" rel="nofollow">x dotnet tool</a>:</p>
+<pre><code>$ dotnet tool install --global x 
+</code></pre>
+<p>Create a new <strong>Gradle</strong> Java Console App (example uses <a href="https://www.jetbrains.com/idea/download/" rel="nofollow">IntelliJ IDEA Community</a>):</p>
+<p><a href="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/java/create-01.png" target="_blank" rel="nofollow"><img src="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/java/create-01.png" alt="" style="max-width:100%;"></a></p>
+<p>Update <strong>build.gradle</strong> with required dependencies:</p>
+<div class="highlight highlight-source-groovy-gradle"><pre><span class="pl-en">plugins</span> {
+    id <span class="pl-s"><span class="pl-pds">'</span>java<span class="pl-pds">'</span></span>
+    id <span class="pl-s"><span class="pl-pds">'</span>com.google.protobuf<span class="pl-pds">'</span></span> version <span class="pl-s"><span class="pl-pds">'</span>0.8.8<span class="pl-pds">'</span></span>
+    id <span class="pl-s"><span class="pl-pds">'</span>idea<span class="pl-pds">'</span></span>
+}
+
+group <span class="pl-s"><span class="pl-pds">'</span>org.example<span class="pl-pds">'</span></span>
+version <span class="pl-s"><span class="pl-pds">'</span>1.0-SNAPSHOT<span class="pl-pds">'</span></span>
+
+sourceCompatibility <span class="pl-k">=</span> <span class="pl-c1">1.8</span>
+
+<span class="pl-en">repositories</span> {
+    mavenCentral()
+}
+
+<span class="pl-k">def</span> grpcVersion <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>1.25.0<span class="pl-pds">'</span></span>
+<span class="pl-k">def</span> nettyTcNativeVersion <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>2.0.26.Final<span class="pl-pds">'</span></span>
+<span class="pl-k">def</span> protobufVersion <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>3.11.0<span class="pl-pds">'</span></span>
+
+<span class="pl-en">dependencies</span> {
+    implementation <span class="pl-s"><span class="pl-pds">"</span>io.grpc:grpc-netty:<span class="pl-s1"><span class="pl-pse">${</span>grpcVersion<span class="pl-pse">}</span></span><span class="pl-pds">"</span></span>
+    implementation <span class="pl-s"><span class="pl-pds">"</span>io.grpc:grpc-protobuf:<span class="pl-s1"><span class="pl-pse">${</span>grpcVersion<span class="pl-pse">}</span></span><span class="pl-pds">"</span></span>
+    implementation <span class="pl-s"><span class="pl-pds">"</span>io.grpc:grpc-stub:<span class="pl-s1"><span class="pl-pse">${</span>grpcVersion<span class="pl-pse">}</span></span><span class="pl-pds">"</span></span>
+    compileOnly <span class="pl-s"><span class="pl-pds">"</span>javax.annotation:javax.annotation-api:1.2<span class="pl-pds">"</span></span>
+
+    implementation <span class="pl-s"><span class="pl-pds">"</span>com.google.protobuf:protobuf-java-util:<span class="pl-s1"><span class="pl-pse">${</span>protobufVersion<span class="pl-pse">}</span></span><span class="pl-pds">"</span></span>
+
+    runtimeOnly <span class="pl-s"><span class="pl-pds">"</span>io.netty:netty-tcnative-boringssl-static:<span class="pl-s1"><span class="pl-pse">${</span>nettyTcNativeVersion<span class="pl-pse">}</span></span><span class="pl-pds">"</span></span>
+
+    testImplementation <span class="pl-s"><span class="pl-pds">"</span>io.grpc:grpc-testing:<span class="pl-s1"><span class="pl-pse">${</span>grpcVersion<span class="pl-pse">}</span></span><span class="pl-pds">"</span></span>
+    testImplementation <span class="pl-s"><span class="pl-pds">"</span>junit:junit:4.12<span class="pl-pds">"</span></span>
+    testImplementation <span class="pl-s"><span class="pl-pds">"</span>org.mockito:mockito-core:2.28.2<span class="pl-pds">"</span></span>
+}
+
+<span class="pl-en">dependencies</span> {
+    testCompile <span class="pl-c1">group</span>: <span class="pl-s"><span class="pl-pds">'</span>junit<span class="pl-pds">'</span></span>, <span class="pl-c1">name</span>: <span class="pl-s"><span class="pl-pds">'</span>junit<span class="pl-pds">'</span></span>, <span class="pl-c1">version</span>: <span class="pl-s"><span class="pl-pds">'</span>4.12<span class="pl-pds">'</span></span>
+}</pre></div>
+<p>Add protoc generated TodoWorld DTOs and gRPC GrpcServicesBlockingStub:</p>
+<pre><code>$ cd src\main\java
+$ x proto-java https://todoworld.servicestack.net
+</code></pre>
+<p>Use protoc generated DTOs and <code>GrpcServiceClient</code> to call TodoWorld gRPC Service:</p>
+<h3>
+<a id="user-content-java-protoc-grpc-insecure-example" class="anchor" href="#java-protoc-grpc-insecure-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Java protoc gRPC insecure Example</h3>
+<div class="highlight highlight-source-java"><pre><span class="pl-k">import</span> <span class="pl-smi">io.grpc.ManagedChannel</span>;
+<span class="pl-k">import</span> <span class="pl-smi">io.grpc.ManagedChannelBuilder</span>;
+
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">Program</span> {
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">void</span> <span class="pl-en">main</span>(<span class="pl-k">String</span>[] <span class="pl-v">args</span>) {
+        <span class="pl-smi">ManagedChannel</span> channel <span class="pl-k">=</span> <span class="pl-smi">ManagedChannelBuilder</span><span class="pl-k">.</span>forAddress(
+                <span class="pl-s"><span class="pl-pds">"</span>todoworld.servicestack.net<span class="pl-pds">"</span></span>, <span class="pl-c1">5054</span>)<span class="pl-k">.</span>usePlaintext()<span class="pl-k">.</span>build();
+
+        <span class="pl-smi">GrpcServicesGrpc</span><span class="pl-k">.</span><span class="pl-smi">GrpcServicesBlockingStub</span> client <span class="pl-k">=</span> <span class="pl-smi">GrpcServicesGrpc</span><span class="pl-k">.</span>newBlockingStub(channel);
+
+        <span class="pl-smi">Services</span><span class="pl-k">.</span><span class="pl-smi">Hello</span> request <span class="pl-k">=</span> <span class="pl-smi">Services</span><span class="pl-k">.</span><span class="pl-smi">Hello</span><span class="pl-k">.</span>newBuilder()<span class="pl-k">.</span>setName(<span class="pl-s"><span class="pl-pds">"</span>gRPC Java<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>build();
+        <span class="pl-smi">String</span> result <span class="pl-k">=</span> client<span class="pl-k">.</span>getHello(request)<span class="pl-k">.</span>getResult();
+
+        <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(result);
+    }
+}</pre></div>
+<p>Create <code>Program.java</code> from the above Java Example:</p>
+<pre><code>$ x mix todoworld-java
+</code></pre>
+<p>Run example with <code>Shift+F10</code>:</p>
+<p><a href="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/java/run-insecure.png" target="_blank" rel="nofollow"><img src="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/java/run-insecure.png" alt="" style="max-width:100%;"></a></p>
+<h3>
+<a id="user-content-java-protoc-grpc-ssl-example" class="anchor" href="#java-protoc-grpc-ssl-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Java protoc gRPC SSL Example</h3>
+<p>Download TodoWorld SSL Certificate used for its gRPC HTTP/2 Services into <strong>resources</strong> folder:</p>
+<pre><code>$ x get https://todoworld.servicestack.net/grpc.crt -out ../resources 
+</code></pre>
+<p>Use certificate when initializing gRPC Channel:</p>
+<div class="highlight highlight-source-java"><pre><span class="pl-k">import</span> <span class="pl-smi">io.grpc.ManagedChannel</span>;
+<span class="pl-k">import</span> <span class="pl-smi">io.grpc.netty.GrpcSslContexts</span>;
+<span class="pl-k">import</span> <span class="pl-smi">io.grpc.netty.NettyChannelBuilder</span>;
+<span class="pl-k">import</span> <span class="pl-smi">java.io.File</span>;
+
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">Program</span> {
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">void</span> <span class="pl-en">main</span>(<span class="pl-k">String</span>[] <span class="pl-v">args</span>) <span class="pl-k">throws</span> <span class="pl-smi">javax.net.ssl<span class="pl-k">.</span>SSLException</span> {
+        <span class="pl-smi">ManagedChannel</span> channel <span class="pl-k">=</span> <span class="pl-smi">NettyChannelBuilder</span><span class="pl-k">.</span>forAddress(<span class="pl-s"><span class="pl-pds">"</span>todoworld.servicestack.net<span class="pl-pds">"</span></span>, <span class="pl-c1">50051</span>)
+            .sslContext(<span class="pl-smi">GrpcSslContexts</span><span class="pl-k">.</span>forClient()
+                .trustManager(<span class="pl-k">new</span> <span class="pl-smi">File</span>(<span class="pl-smi">Program</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getClassLoader()<span class="pl-k">.</span>getResource(<span class="pl-s"><span class="pl-pds">"</span>grpc.crt<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>getFile()))
+                .build())
+            .build();
+
+        <span class="pl-smi">GrpcServicesGrpc</span><span class="pl-k">.</span><span class="pl-smi">GrpcServicesBlockingStub</span> client <span class="pl-k">=</span> <span class="pl-smi">GrpcServicesGrpc</span><span class="pl-k">.</span>newBlockingStub(channel);
+
+        <span class="pl-smi">Services</span><span class="pl-k">.</span><span class="pl-smi">Hello</span> request <span class="pl-k">=</span> <span class="pl-smi">Services</span><span class="pl-k">.</span><span class="pl-smi">Hello</span><span class="pl-k">.</span>newBuilder()<span class="pl-k">.</span>setName(<span class="pl-s"><span class="pl-pds">"</span>gRPC Java<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>build();
+        <span class="pl-smi">String</span> result <span class="pl-k">=</span> client<span class="pl-k">.</span>getHello(request)<span class="pl-k">.</span>getResult();
+
+        <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(result);
+    }
+}</pre></div>
+<p>Override <code>Program.java</code> with the above Java Example:</p>
+<pre><code>$ x mix todoworld-java-ssl
+</code></pre>
+<p>Run example with <code>Shift+F10</code>:</p>
+<p><a href="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/java/run-ssl.png" target="_blank" rel="nofollow"><img src="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/java/run-ssl.png" alt="" style="max-width:100%;"></a></p>
+</div>

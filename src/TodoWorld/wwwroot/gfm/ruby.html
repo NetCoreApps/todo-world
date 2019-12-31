@@ -1,0 +1,97 @@
+<div class="gfm"><h2>
+<a id="user-content-ruby-google-protoc-generated-grpcservicesstub-client-example" class="anchor" href="#ruby-google-protoc-generated-grpcservicesstub-client-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ruby Google protoc generated GrpcServicesStub Client Example</h2>
+<p>Install <a href="https://docs.servicestack.net/web-tool" rel="nofollow">x dotnet tool</a>:</p>
+<pre><code>$ dotnet tool install --global x 
+</code></pre>
+<p>Install required gems:</p>
+<pre><code>$ gem install grpc bundler 
+</code></pre>
+<p>Create <strong>todoworld.gemspec</strong>:</p>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c"><span class="pl-c">#</span> -*- ruby -*-</span>
+<span class="pl-c"><span class="pl-c">#</span> encoding: utf-8</span>
+
+<span class="pl-c1">Gem</span>::<span class="pl-c1">Specification</span>.<span class="pl-k">new</span> <span class="pl-k">do</span> |<span class="pl-smi">s</span>|
+  s.name          <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>todoworld<span class="pl-pds">'</span></span>
+  s.version       <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>1.0.0<span class="pl-pds">'</span></span>
+  s.summary       <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>gRPC Ruby TodoWorld Example<span class="pl-pds">'</span></span>
+  s.description   <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>Simple TodoWorld demo of using gRPC from Ruby<span class="pl-pds">'</span></span>
+
+  s.files         <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">`</span>git ls-files -- *<span class="pl-pds">`</span></span>.split(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\n</span><span class="pl-pds">"</span></span>)
+  s.executables   <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">`</span>git ls-files -- client.rb<span class="pl-pds">`</span></span>.split(<span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\n</span><span class="pl-pds">"</span></span>).map <span class="pl-k">do</span> |<span class="pl-smi">f</span>|
+    <span class="pl-c1">File</span>.basename(f)
+  <span class="pl-k">end</span>
+  s.require_paths <span class="pl-k">=</span> [<span class="pl-s"><span class="pl-pds">'</span>lib<span class="pl-pds">'</span></span>]
+  s.platform      <span class="pl-k">=</span> <span class="pl-c1">Gem</span>::<span class="pl-c1">Platform</span>::<span class="pl-c1">RUBY</span>
+
+  s.add_dependency <span class="pl-s"><span class="pl-pds">'</span>grpc<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~&gt; 1.0<span class="pl-pds">'</span></span>
+  s.add_dependency <span class="pl-s"><span class="pl-pds">'</span>multi_json<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~&gt; 1.13.1<span class="pl-pds">'</span></span>
+  s.add_development_dependency <span class="pl-s"><span class="pl-pds">'</span>bundler<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>~&gt; 2.0<span class="pl-pds">'</span></span>
+<span class="pl-k">end</span></pre></div>
+<p>Generate <code>Gemfile</code> and install dependencies:</p>
+<pre><code>$ bundle init
+$ bundle install
+</code></pre>
+<p>Add protoc generated TodoWorld DTOs and gRPC Service Client:</p>
+<pre><code>$ md lib
+$ x proto-ruby https://todoworld.servicestack.net -out lib
+</code></pre>
+<h3>
+<a id="user-content-ruby-protoc-grpc-insecure-example" class="anchor" href="#ruby-protoc-grpc-insecure-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ruby protoc gRPC insecure Example</h3>
+<p>Use protoc generated DTOs and <code>GrpcServicesStub</code> to call TodoWorld gRPC Service in <code>main.rb</code>:</p>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c"><span class="pl-c">#</span>!/usr/bin/env ruby</span>
+
+this_dir <span class="pl-k">=</span> <span class="pl-c1">File</span>.expand_path(<span class="pl-c1">File</span>.dirname(<span class="pl-c1">__FILE__</span>))
+lib_dir <span class="pl-k">=</span> <span class="pl-c1">File</span>.join(this_dir, <span class="pl-s"><span class="pl-pds">'</span>lib<span class="pl-pds">'</span></span>)
+<span class="pl-smi">$LOAD_PATH</span>.unshift(lib_dir) <span class="pl-k">unless</span> <span class="pl-smi">$LOAD_PATH</span>.include?(lib_dir)
+
+<span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>grpc<span class="pl-pds">'</span></span>
+<span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>services_pb<span class="pl-pds">'</span></span>
+<span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>services_services_pb<span class="pl-pds">'</span></span>
+
+<span class="pl-k">def</span> <span class="pl-en">main</span>
+    client <span class="pl-k">=</span> <span class="pl-c1">GrpcServices</span>::<span class="pl-c1">Stub</span>.<span class="pl-k">new</span>(<span class="pl-s"><span class="pl-pds">'</span>todoworld.servicestack.net:5054<span class="pl-pds">'</span></span>, 
+        <span class="pl-c1">:this_channel_is_insecure</span>)
+
+    response <span class="pl-k">=</span> client.get_hello(<span class="pl-c1">Hello</span>.<span class="pl-k">new</span>(<span class="pl-c1">Name:</span><span class="pl-s"><span class="pl-pds">'</span>gRPC Ruby<span class="pl-pds">'</span></span>))
+    <span class="pl-c1">puts</span> response.<span class="pl-c1">Result</span>
+<span class="pl-k">end</span>
+
+main</pre></div>
+<p>Create <code>main.rb</code> with the above Ruby Example:</p>
+<pre><code>$ x mix todoworld-ruby
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ main.rb
+</code></pre>
+<h3>
+<a id="user-content-ruby-protoc-grpc-ssl-example" class="anchor" href="#ruby-protoc-grpc-ssl-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ruby protoc gRPC SSL Example</h3>
+<p>Download TodoWorld SSL Certificate used for its gRPC HTTP/2 Services:</p>
+<pre><code>$ x get https://todoworld.servicestack.net/grpc.crt
+</code></pre>
+<p>Use certificate when initializing <code>GrpcServicesStub</code>:</p>
+<div class="highlight highlight-source-ruby"><pre><span class="pl-c"><span class="pl-c">#</span>!/usr/bin/env ruby</span>
+
+this_dir <span class="pl-k">=</span> <span class="pl-c1">File</span>.expand_path(<span class="pl-c1">File</span>.dirname(<span class="pl-c1">__FILE__</span>))
+lib_dir <span class="pl-k">=</span> <span class="pl-c1">File</span>.join(this_dir, <span class="pl-s"><span class="pl-pds">'</span>lib<span class="pl-pds">'</span></span>)
+<span class="pl-smi">$LOAD_PATH</span>.unshift(lib_dir) <span class="pl-k">unless</span> <span class="pl-smi">$LOAD_PATH</span>.include?(lib_dir)
+
+<span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>grpc<span class="pl-pds">'</span></span>
+<span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>services_pb<span class="pl-pds">'</span></span>
+<span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>services_services_pb<span class="pl-pds">'</span></span>
+
+<span class="pl-k">def</span> <span class="pl-en">main</span>
+    credentials <span class="pl-k">=</span> <span class="pl-c1">GRPC</span>::<span class="pl-c1">Core</span>::<span class="pl-c1">ChannelCredentials</span>.<span class="pl-k">new</span>(<span class="pl-c1">File</span>.read(<span class="pl-s"><span class="pl-pds">'</span>grpc.crt<span class="pl-pds">'</span></span>))
+    client <span class="pl-k">=</span> <span class="pl-c1">GrpcServices</span>::<span class="pl-c1">Stub</span>.<span class="pl-k">new</span>(<span class="pl-s"><span class="pl-pds">'</span>todoworld.servicestack.net:50051<span class="pl-pds">'</span></span>, credentials)
+
+    response <span class="pl-k">=</span> client.get_hello(<span class="pl-c1">Hello</span>.<span class="pl-k">new</span>(<span class="pl-c1">Name:</span><span class="pl-s"><span class="pl-pds">'</span>gRPC Ruby<span class="pl-pds">'</span></span>))
+    <span class="pl-c1">puts</span> response.<span class="pl-c1">Result</span>
+<span class="pl-k">end</span>
+
+main</pre></div>
+<p>Override <code>main.rb</code> with the above Ruby Example:</p>
+<pre><code>$ x mix todoworld-ruby-ssl
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ ruby main.rb
+</code></pre>
+</div>

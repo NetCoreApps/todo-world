@@ -1,0 +1,74 @@
+<div class="gfm"><h2>
+<a id="user-content-c-generic-grpcserviceclient-example" class="anchor" href="#c-generic-grpcserviceclient-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>C# Generic GrpcServiceClient Example</h2>
+<p>Install <a href="https://docs.servicestack.net/web-tool" rel="nofollow">x dotnet tool</a>:</p>
+<pre><code>$ dotnet tool install --global x 
+</code></pre>
+<p>Create a new C# App:</p>
+<pre><code>$ dotnet new console
+</code></pre>
+<p>Add <a href="https://www.nuget.org/packages/ServiceStack.GrpcClient" rel="nofollow">ServiceStack.GrpcClient</a> NuGet Package:</p>
+<pre><code>$ dotnet add package ServiceStack.GrpcClient
+</code></pre>
+<p>Add TodoWorld DTOs:</p>
+<pre><code>$ x csharp https://todoworld.servicestack.net
+</code></pre>
+<p>Use TodoWorld DTOs with generic <code>GrpcServiceClient</code> to call TodoWorld gRPC Service:</p>
+<h3>
+<a id="user-content-c-grpc-insecure-example" class="anchor" href="#c-grpc-insecure-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>C# gRPC insecure Example</h3>
+<div class="highlight highlight-source-cs"><pre><span class="pl-k">using</span> <span class="pl-en">System</span>;
+<span class="pl-k">using</span> <span class="pl-en">System</span>.<span class="pl-en">Threading</span>.<span class="pl-en">Tasks</span>;
+<span class="pl-k">using</span> <span class="pl-en">ServiceStack</span>;
+<span class="pl-k">using</span> <span class="pl-en">TodoWorld</span>.<span class="pl-en">ServiceModel</span>;
+
+<span class="pl-k">namespace</span> <span class="pl-en">TodoWorld</span>
+{
+    <span class="pl-k">class</span> <span class="pl-en">Program</span>
+    {
+        <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">async</span> <span class="pl-en">Task</span> <span class="pl-en">Main</span>(<span class="pl-k">string</span>[] <span class="pl-smi">args</span>)
+        {
+            <span class="pl-smi">ProtoBuf</span>.<span class="pl-smi">Grpc</span>.<span class="pl-smi">Client</span>.<span class="pl-smi">GrpcClientFactory</span>.<span class="pl-smi">AllowUnencryptedHttp2</span> <span class="pl-k">=</span> <span class="pl-c1">true</span>;
+            <span class="pl-k">var</span> <span class="pl-smi">client</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">GrpcServiceClient</span>(<span class="pl-s"><span class="pl-pds">"</span>http://todoworld.servicestack.net:5054<span class="pl-pds">"</span></span>);
+
+            <span class="pl-k">var</span> <span class="pl-smi">response</span> <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-smi">client</span>.<span class="pl-en">GetAsync</span>(<span class="pl-k">new</span> <span class="pl-en">Hello</span> { <span class="pl-smi">Name</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>gRPC C#<span class="pl-pds">"</span></span> });
+
+            <span class="pl-smi">Console</span>.<span class="pl-en">WriteLine</span>(<span class="pl-smi">response</span>.<span class="pl-smi">Result</span>);
+        }
+    }
+}</pre></div>
+<p>Override <code>Program.cs</code> with the above C# Example:</p>
+<pre><code>$ x mix todoworld-cs
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ dotnet run
+</code></pre>
+<h3>
+<a id="user-content-c-grpc-ssl-example" class="anchor" href="#c-grpc-ssl-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>C# gRPC SSL Example</h3>
+<div class="highlight highlight-source-cs"><pre><span class="pl-k">using</span> <span class="pl-en">System</span>;
+<span class="pl-k">using</span> <span class="pl-en">System</span>.<span class="pl-en">Threading</span>.<span class="pl-en">Tasks</span>;
+<span class="pl-k">using</span> <span class="pl-en">System</span>.<span class="pl-en">Security</span>.<span class="pl-en">Cryptography</span>.<span class="pl-en">X509Certificates</span>;
+<span class="pl-k">using</span> <span class="pl-en">ServiceStack</span>;
+<span class="pl-k">using</span> <span class="pl-en">TodoWorld</span>.<span class="pl-en">ServiceModel</span>;
+
+<span class="pl-k">namespace</span> <span class="pl-en">TodoWorld</span>
+{
+    <span class="pl-k">class</span> <span class="pl-en">Program</span>
+    {
+        <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">async</span> <span class="pl-en">Task</span> <span class="pl-en">Main</span>(<span class="pl-k">string</span>[] <span class="pl-smi">args</span>)
+        {
+            <span class="pl-k">var</span> <span class="pl-smi">client</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">GrpcServiceClient</span>(<span class="pl-s"><span class="pl-pds">"</span>https://todoworld.servicestack.net:50051<span class="pl-pds">"</span></span>, 
+                <span class="pl-k">new</span> <span class="pl-en">X509Certificate2</span>(<span class="pl-s"><span class="pl-pds">"</span>https://todoworld.servicestack.net/grpc.crt<span class="pl-pds">"</span></span>.<span class="pl-en">GetBytesFromUrl</span>()), 
+                <span class="pl-smi">GrpcUtils</span>.<span class="pl-en">AllowSelfSignedCertificatesFrom</span>(<span class="pl-s"><span class="pl-pds">"</span>todoworld.servicestack.net<span class="pl-pds">"</span></span>));
+
+            <span class="pl-k">var</span> <span class="pl-smi">response</span> <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-smi">client</span>.<span class="pl-en">GetAsync</span>(<span class="pl-k">new</span> <span class="pl-en">Hello</span> { <span class="pl-smi">Name</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>gRPC C#<span class="pl-pds">"</span></span> });
+
+            <span class="pl-smi">Console</span>.<span class="pl-en">WriteLine</span>(<span class="pl-smi">response</span>.<span class="pl-smi">Result</span>);
+        }
+    }
+}</pre></div>
+<p>Override <code>Program.cs</code> with the above C# Example:</p>
+<pre><code>$ x mix todoworld-cs-ssl
+</code></pre>
+<p>Run example:</p>
+<pre><code>$ dotnet run
+</code></pre>
+</div>
