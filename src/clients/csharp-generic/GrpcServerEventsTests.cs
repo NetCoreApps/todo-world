@@ -22,9 +22,9 @@ namespace CSharpGeneric
             var i = 0;
             await foreach (var msg in stream)
             {
-                var obj = JSON.parse(msg.Json);
                 if (msg.Selector.StartsWith("todos"))
                 {
+                    var obj = JSON.parse(msg.Json);
                     if (obj is Dictionary<string, object> map)
                     {
                         var id = map["id"];
