@@ -14,6 +14,7 @@
 
     <ItemGroup>
         <PackageReference Include="ServiceStack.GrpcClient" Version="5.*" />
+        <PackageReference Include="ServiceStack.Common" Version="5.*" />
     </ItemGroup>
 
 </Project>
