@@ -14,8 +14,7 @@ namespace CSharpGeneric
 
         public static async Task Main(string[] args)
         {
-            var client = new GrpcServiceClient("https://localhost:5001");
-            await Run(client);
+            await Run(CreateClient());
         }
 
         public static async Task Run(GrpcServiceClient client)

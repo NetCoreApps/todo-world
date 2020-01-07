@@ -7,7 +7,7 @@ If that fails see if you can diagnose and resolve the issue from the verbose out
 
     $ dotnet dev-certs https --export-path . --verbose
 
-If you can't keep copy of the certificates thumbprint, they export it via Windows Certificate Manager:
+If you can't keep copy of the certificates thumbprint, then export it via Windows Certificate Manager:
 
     $ certmgr
 
