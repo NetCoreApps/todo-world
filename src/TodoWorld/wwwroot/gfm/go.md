@@ -1,7 +1,7 @@
 
 ## Go Google protoc generated GrpcServiceClient Example
 
-Install [x dotnet tool](https://docs.servicestack.net/web-tool):
+Install [x dotnet tool](https://docs.servicestack.net/dotnet-tool):
     
     $ dotnet tool install --global x 
 
