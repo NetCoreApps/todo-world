@@ -1,9 +1,9 @@
 As it's [impossible to implement the HTTP/2 gRPC spec in the browser](https://grpc.io/blog/state-of-grpc-web/),
 in order to be able to consume gRPC services from a browser a [gRPC Web Proxy](https://grpc.io/blog/state-of-grpc-web/#the-tech) is needed.
 
-The current recommendation from the gRPC Web team is to use the 
+The current recommendation from the gRPC Web team is to 
 [Configure the Envoy Proxy](https://grpc.io/docs/tutorials/basic/web/#configure-the-envoy-proxy) to forward
-the gRPC browser request to the native gRPC endpoint, however as it adds more moving parts and 
+gRPC browser requests to the native gRPC endpoint, however as it adds more moving parts and 
 additional complexity, if you're not already using envoyproxy we instead recommended using 
 ServiceStack HTTP JSON Services, made possible since ServiceStack's gRPC 
 Service implementations are also made available over REST-ful HTTP APIs - i.e. the lingua franca of the web.

@@ -1,0 +1,119 @@
+<div class="gfm"><h2>
+<a id="user-content-flutter-dart-protoc-generated-grpcserviceclient-example" class="anchor" href="#flutter-dart-protoc-generated-grpcserviceclient-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Flutter Dart protoc generated GrpcServiceClient Example</h2>
+<p>Install <a href="https://docs.servicestack.net/dotnet-tool" rel="nofollow">x dotnet tool</a>:</p>
+<pre><code>$ dotnet tool install --global x 
+</code></pre>
+<p>Create a new Flutter project with <a href="https://developer.android.com/studio" rel="nofollow">Android Studio</a>:</p>
+<p><a href="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/flutter/new-flutter-project.png" target="_blank" rel="nofollow"><img src="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/flutter/new-flutter-project.png" alt="" style="max-width:100%;"></a></p>
+<p>Add protoc generated TodoWorld DTOs and gRPC GrpcServiceClient to <code>lib/</code> folder:</p>
+<pre><code>$ x proto-dart https://todoworld.servicestack.net -out lib
+</code></pre>
+<p>Add required dependencies to <strong>pubspec.yaml</strong>:</p>
+<div class="highlight highlight-source-yaml"><pre><span class="pl-ent">dependencies</span>:
+  <span class="pl-ent">fixnum</span>: <span class="pl-s">^0.10.11</span>
+  <span class="pl-ent">async</span>: <span class="pl-s">^2.2.0</span>
+  <span class="pl-ent">protobuf</span>: <span class="pl-s">^1.0.1</span>
+  <span class="pl-ent">grpc</span>: <span class="pl-s">^2.1.3</span></pre></div>
+<p>Install dependencies by running <code>pub get</code> or clicking on <strong>Get Dependencies</strong> link in the IDE:</p>
+<p><a href="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/flutter/pub-get.png" target="_blank" rel="nofollow"><img src="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/flutter/pub-get.png" alt="" style="max-width:100%;"></a></p>
+<h3>
+<a id="user-content-flutter-protoc-grpc-insecure-example" class="anchor" href="#flutter-protoc-grpc-insecure-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Flutter protoc gRPC insecure Example</h3>
+<p>Use protoc generated DTOs and <code>GrpcServiceClient</code> to call TodoWorld gRPC Service in <code>_MyHomePageState</code>
+class in <code>bin/main.dart</code>:</p>
+<div class="highlight highlight-source-dart"><pre><span class="pl-k">import</span> <span class="pl-s">'package:flutter/material.dart'</span>;
+<span class="pl-k">import</span> <span class="pl-s">'package:flutter_grpc/services.pbgrpc.dart'</span>;
+<span class="pl-k">import</span> <span class="pl-s">'package:grpc/grpc.dart'</span>;
+
+<span class="pl-c">//...</span>
+
+<span class="pl-k">class</span> <span class="pl-c1">_MyHomePageState</span> <span class="pl-k">extends</span> <span class="pl-c1">State</span><span class="pl-k">&lt;</span><span class="pl-c1">MyHomePage</span><span class="pl-k">&gt;</span> {
+  <span class="pl-c1">String</span> result <span class="pl-k">=</span> <span class="pl-s">''</span>;
+  <span class="pl-c1">GrpcServicesClient</span> client <span class="pl-k">=</span> <span class="pl-c1">GrpcServicesClient</span>(
+      <span class="pl-c1">ClientChannel</span>(<span class="pl-s">'todoworld.servicestack.net'</span>, port<span class="pl-k">:</span><span class="pl-c1">50054</span>,
+          options<span class="pl-k">:</span><span class="pl-c1">ChannelOptions</span>(credentials<span class="pl-k">:</span> <span class="pl-c1">ChannelCredentials</span>.<span class="pl-en">insecure</span>())));
+
+  <span class="pl-k">void</span> <span class="pl-en">_callGrpcService</span>() <span class="pl-k">async</span> {
+    <span class="pl-k">var</span> response <span class="pl-k">=</span> <span class="pl-k">await</span> client.<span class="pl-en">getHello</span>(<span class="pl-c1">Hello</span>()..name<span class="pl-k">=</span><span class="pl-s">"Flutter gRPC"</span>);
+    <span class="pl-en">setState</span>(() {
+      result <span class="pl-k">=</span> response.result;
+    });
+  }
+
+  <span class="pl-c">//...</span>
+}</pre></div>
+<p>Capture the result gRPC API request in the <code>result</code> String then change the Widget <code>build()</code> to
+display that instead of <code>_counter</code> then update the <code>floatingActionButton</code> to call your <code>_callGrpcService</code>
+method instead:</p>
+<div class="highlight highlight-source-dart"><pre>  <span class="pl-k">@override</span>
+  <span class="pl-c1">Widget</span> <span class="pl-en">build</span>(<span class="pl-c1">BuildContext</span> context) {
+    <span class="pl-k">return</span> <span class="pl-c1">Scaffold</span>(
+      appBar<span class="pl-k">:</span> <span class="pl-c1">AppBar</span>(
+        title<span class="pl-k">:</span> <span class="pl-c1">Text</span>(widget.title),
+      ),
+      body<span class="pl-k">:</span> <span class="pl-c1">Center</span>(
+        child<span class="pl-k">:</span> <span class="pl-c1">Column</span>(
+          mainAxisAlignment<span class="pl-k">:</span> <span class="pl-c1">MainAxisAlignment</span>.center,
+          children<span class="pl-k">:</span> <span class="pl-k">&lt;</span><span class="pl-c1">Widget</span><span class="pl-k">&gt;</span>[
+            <span class="pl-c1">Text</span>(
+              <span class="pl-s">'gRPC Service Example:'</span>,
+            ),
+            <span class="pl-c1">Text</span>(
+              <span class="pl-s">'$<span class="pl-v">result</span>'</span>,
+              style<span class="pl-k">:</span> <span class="pl-c1">Theme</span>.<span class="pl-en">of</span>(context).textTheme.display1,
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton<span class="pl-k">:</span> <span class="pl-c1">FloatingActionButton</span>(
+        onPressed<span class="pl-k">:</span> _callGrpcService,
+        tooltip<span class="pl-k">:</span> <span class="pl-s">'gRPC Service Example'</span>,
+        child<span class="pl-k">:</span> <span class="pl-c1">Icon</span>(<span class="pl-c1">Icons</span>.play_arrow),
+      ),
+    );
+  }</pre></div>
+<p>With Flutter's live-reload capability you should be able to see your changes instantly in the Android emulator
+where clicking the icon should display the result of your plain-text gRPC Service Request:</p>
+<p><a href="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/flutter/flutter-grpc-insecure.png" target="_blank" rel="nofollow"><img src="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/flutter/flutter-grpc-insecure.png" alt="" style="max-width:100%;"></a></p>
+<h3>
+<a id="user-content-flutter-protoc-grpc-ssl-example" class="anchor" href="#flutter-protoc-grpc-ssl-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Flutter protoc gRPC SSL Example</h3>
+<p>To use gRPC SSL we'll need a copy of our gRPC's Service SSL Certificate which we can make available to our
+Flutter App by saving it to our App's <code>assets</code> directory:</p>
+<pre><code>$ md assets
+$ x get https://todoworld.servicestack.net/grpc.crt -out assets
+</code></pre>
+<p>As loading assets is an asynchronous operation we'll need to preload it either by loading it in <code>main()</code> and
+passing it as an attribute down to all our components or we can load it in our State widget's <code>initState()</code>
+method:</p>
+<div class="highlight highlight-source-dart"><pre><span class="pl-k">class</span> <span class="pl-c1">_MyHomePageState</span> <span class="pl-k">extends</span> <span class="pl-c1">State</span><span class="pl-k">&lt;</span><span class="pl-c1">MyHomePage</span><span class="pl-k">&gt;</span> {
+  <span class="pl-c1">String</span> result <span class="pl-k">=</span> <span class="pl-s">''</span>;
+  <span class="pl-c1">GrpcServicesClient</span> client;
+
+  <span class="pl-k">@override</span>
+  <span class="pl-k">void</span> <span class="pl-en">initState</span>() {
+    <span class="pl-c1">super</span>.<span class="pl-en">initState</span>();
+    <span class="pl-c1">DefaultAssetBundle</span>.<span class="pl-en">of</span>(context).<span class="pl-en">load</span>(<span class="pl-s">"assets/grpc.crt"</span>).<span class="pl-en">then</span>((bytes) <span class="pl-k">=</span><span class="pl-k">&gt;</span> <span class="pl-en">setState</span>(() {
+      client <span class="pl-k">=</span> <span class="pl-c1">GrpcServicesClient</span>(
+          <span class="pl-c1">ClientChannel</span>(<span class="pl-s">'todoworld.servicestack.net'</span>, port<span class="pl-k">:</span><span class="pl-c1">50051</span>,
+              options<span class="pl-k">:</span><span class="pl-c1">ChannelOptions</span>(credentials<span class="pl-k">:</span> <span class="pl-c1">ChannelCredentials</span>.<span class="pl-en">secure</span>(
+                  certificates<span class="pl-k">:</span> bytes.buffer.<span class="pl-en">asUint8List</span>(),
+                  authority<span class="pl-k">:</span> <span class="pl-s">'todoworld.servicestack.net'</span>
+              ))));
+    }));
+  }
+
+  <span class="pl-k">void</span> <span class="pl-en">_callGrpcService</span>() <span class="pl-k">async</span> {
+    <span class="pl-k">var</span> response <span class="pl-k">=</span> <span class="pl-k">await</span> client.<span class="pl-en">getHello</span>(<span class="pl-c1">Hello</span>()..name<span class="pl-k">=</span><span class="pl-s">"gRPC SSL"</span>);
+    <span class="pl-en">setState</span>(() {
+      result <span class="pl-k">=</span> response.result;
+    });
+  }
+
+  <span class="pl-c">//...</span>
+}</pre></div>
+<p>You'll also need to update the port to refer to the gRPC SSL endpoint, update your <code>Hello</code> request
+so we can verify the result is from the new gRPC SSL request. Now after live-reload has completed,
+clicking on the icon will show the response of a gRPC SSL Request:</p>
+<p><a href="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/flutter/flutter-grpc-insecure.png" target="_blank" rel="nofollow"><img src="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/flutter/flutter-grpc-insecure.png" alt="" style="max-width:100%;"></a></p>
+<p>Refer to <a href="https://github.com/NetCoreApps/todo-world/tree/master/src/mobile/flutter/flutter_grpc">/src/mobile/flutter/flutter_grpc</a>
+for a complete example project.</p>
+</div>

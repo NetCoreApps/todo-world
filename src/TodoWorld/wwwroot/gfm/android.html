@@ -1,0 +1,101 @@
+<div class="gfm"><h2>
+<a id="user-content-android-java-lite-protoc-generated-grpcserviceclient-example" class="anchor" href="#android-java-lite-protoc-generated-grpcserviceclient-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Android Java-Lite protoc generated GrpcServiceClient Example</h2>
+<p>This Android gRPC Example differentiates from the <a href="#java">Java gRPC Example</a> by using the more appropriate
+<a href="https://github.com/protocolbuffers/protobuf/blob/master/java/lite.md">Java Lite</a> which results in a
+much smaller code size making it more suitable to be used on embedded Java platforms like Android.</p>
+<p>In addition it uses the Android-compatible OK HTTP SSL Libraries in-place of Netty's SSL libraries and a
+custom <code>services.proto</code> allow us to specify the Java <strong>package</strong> we want the generated gRPC client to use.</p>
+<p>Install <a href="https://docs.servicestack.net/dotnet-tool" rel="nofollow">x dotnet tool</a>:</p>
+<pre><code>$ dotnet tool install --global x 
+</code></pre>
+<p>Create a new Android App with <a href="https://developer.android.com/studio" rel="nofollow">Android Studio</a>:</p>
+<p><a href="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/android/new-android-project.png" target="_blank" rel="nofollow"><img src="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/android/new-android-project.png" alt="" style="max-width:100%;"></a></p>
+<p>Add protoc generated TodoWorld DTOs and gRPC <code>GrpcServicesStub</code>:</p>
+<pre><code>$ cd app\src\main\java
+$ x proto-java https://todoworld.servicestack.net
+</code></pre>
+<p>Modify the downloaded <code>services.proto</code> to use the <strong>package</strong> name of your App, e.g:</p>
+<div class="highlight highlight-source-protobuf"><pre><span class="pl-k">option</span> <span class="pl-e">java_package</span> = <span class="pl-s">"net.servicestack.androidapp"</span>;</pre></div>
+<p>Generate a <strong>java-lite</strong> protoc gRPC client from your modified <code>services.proto</code>:</p>
+<pre><code>$ x proto-java-lite services.proto
+</code></pre>
+<p>Update <strong>build.gradle</strong> with required gRPC, protobuf and OK HTTP plugins and dependencies:</p>
+<div class="highlight highlight-source-groovy-gradle"><pre><span class="pl-en">plugins</span> {
+    id <span class="pl-s"><span class="pl-pds">'</span>com.google.protobuf<span class="pl-pds">'</span></span> version <span class="pl-s"><span class="pl-pds">'</span>0.8.8<span class="pl-pds">'</span></span>
+    id <span class="pl-s"><span class="pl-pds">'</span>idea<span class="pl-pds">'</span></span>
+}
+
+<span class="pl-c"><span class="pl-c">//</span>...</span>
+
+<span class="pl-k">def</span> grpcVersion <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>1.27.0<span class="pl-pds">'</span></span>
+
+<span class="pl-en">dependencies</span> {
+    implementation <span class="pl-s"><span class="pl-pds">'</span>javax.annotation:javax.annotation-api:1.2<span class="pl-pds">'</span></span>
+    implementation <span class="pl-s"><span class="pl-pds">"</span>io.grpc:grpc-protobuf:<span class="pl-s1"><span class="pl-pse">${</span>grpcVersion<span class="pl-pse">}</span></span><span class="pl-pds">"</span></span>
+    implementation <span class="pl-s"><span class="pl-pds">"</span>io.grpc:grpc-auth:<span class="pl-s1"><span class="pl-pse">${</span>grpcVersion<span class="pl-pse">}</span></span><span class="pl-pds">"</span></span>
+    implementation <span class="pl-s"><span class="pl-pds">"</span>io.grpc:grpc-census:<span class="pl-s1"><span class="pl-pse">${</span>grpcVersion<span class="pl-pse">}</span></span><span class="pl-pds">"</span></span>
+    implementation <span class="pl-s"><span class="pl-pds">"</span>io.grpc:grpc-okhttp:<span class="pl-s1"><span class="pl-pse">${</span>grpcVersion<span class="pl-pse">}</span></span><span class="pl-pds">"</span></span>
+    implementation <span class="pl-s"><span class="pl-pds">"</span>io.grpc:grpc-stub:<span class="pl-s1"><span class="pl-pse">${</span>grpcVersion<span class="pl-pse">}</span></span><span class="pl-pds">"</span></span>
+
+<span class="pl-c"><span class="pl-c">//</span>...</span>
+}</pre></div>
+<p>Sync changes to your <strong>build.gradle</strong> to install the new dependencies:</p>
+<p><a href="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/android/gradle-sync.png" target="_blank" rel="nofollow"><img src="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/android/gradle-sync.png" alt="" style="max-width:100%;"></a></p>
+<p>Add the <code>android.permission.INTERNET</code> to your <strong>AndroidManifest.xml</strong> (before <code>&lt;application/&gt;</code> tag):</p>
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">uses-permission</span> <span class="pl-e">android</span><span class="pl-e">:</span><span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>android.permission.INTERNET<span class="pl-pds">"</span></span>/&gt;</pre></div>
+<p>Use protoc generated DTOs and async <code>GrpcServicesStub</code> to perform non-blocking TodoWorld gRPC Service requests:</p>
+<h3>
+<a id="user-content-android-java-protoc-grpc-insecure-example" class="anchor" href="#android-java-protoc-grpc-insecure-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Android Java protoc gRPC insecure Example</h3>
+<div class="highlight highlight-source-java"><pre><span class="pl-smi">ManagedChannel</span> channel <span class="pl-k">=</span> <span class="pl-smi">ManagedChannelBuilder</span><span class="pl-k">.</span>forAddress(
+    <span class="pl-s"><span class="pl-pds">"</span>todoworld.servicestack.net<span class="pl-pds">"</span></span>, <span class="pl-c1">50054</span>)<span class="pl-k">.</span>usePlaintext()<span class="pl-k">.</span>build();
+
+<span class="pl-k">final</span> <span class="pl-smi">GrpcServicesGrpc</span><span class="pl-k">.</span><span class="pl-smi">GrpcServicesStub</span> client <span class="pl-k">=</span>
+    <span class="pl-smi">GrpcServicesGrpc</span><span class="pl-k">.</span>newStub(channel);
+
+fab<span class="pl-k">.</span>setOnClickListener(<span class="pl-k">new</span> <span class="pl-smi">View</span>.<span class="pl-smi">OnClickListener</span>() {
+    client.<span class="pl-en">getHello</span>(<span class="pl-smi">Services</span>.<span class="pl-smi">Hello</span>.<span class="pl-v">newBuilder</span>()
+        .<span class="pl-en">setName</span>("<span class="pl-smi">Android</span> <span class="pl-v">gRPC</span>").<span class="pl-en">build</span>(),
+        new StreamObserver<span class="pl-k">&lt;<span class="pl-smi">Services</span>.<span class="pl-smi">HelloResponse</span>&gt;</span>() {
+            <span class="pl-k">@Override</span>
+            <span class="pl-k">public</span> <span class="pl-k">void</span> onNext(<span class="pl-smi">Services</span><span class="pl-k">.</span><span class="pl-smi">HelloResponse</span> value) {
+                <span class="pl-smi">Snackbar</span><span class="pl-k">.</span>make(view, value<span class="pl-k">.</span>getResult(), <span class="pl-smi">Snackbar</span><span class="pl-c1"><span class="pl-k">.</span>LENGTH_LONG</span>)
+                        .setAction(<span class="pl-s"><span class="pl-pds">"</span>Action<span class="pl-pds">"</span></span>, <span class="pl-c1">null</span>)<span class="pl-k">.</span>show();
+            }
+            <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> onError(<span class="pl-smi">Throwable</span> t) {}
+            <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> onCompleted() {}
+        });
+});</pre></div>
+<p>Now run your App and click the Action button to make a plain-text gRPC Request:</p>
+<p><a href="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/android/android-grpc-insecure.png" target="_blank" rel="nofollow"><img src="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/android/android-grpc-insecure.png" alt="" style="max-width:100%;"></a></p>
+<h3>
+<a id="user-content-android-java-protoc-grpc-ssl-example" class="anchor" href="#android-java-protoc-grpc-ssl-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Android Java protoc gRPC SSL Example</h3>
+<p>To use gRPC SSL we'll need a copy of our gRPC's Service SSL Certificate which we can make available to our
+Android App by saving it to our App's <code>assets</code> directory:</p>
+<pre><code>$ md ..\assets
+$ x get https://todoworld.servicestack.net/grpc.crt -out ../assets
+</code></pre>
+<p>Building an TLS Channel configured with a self-signed SSL Certificate requires a bit of effort with OK HTTP
+so we'll include a <a href="https://gist.github.com/gistlyn/0a3311c1b72b136bdfae616507cc38af">ChannelBuilder.java</a>
+to wrap up the boiler plate:</p>
+<pre><code>$ x mix grpc-android
+</code></pre>
+<p>This simplifies the configuration required down to just the <code>grpc.crt</code> certificate loaded from the
+App's Asset Manager, the host and port name of the gRPC SSL Channel:</p>
+<div class="highlight highlight-source-java"><pre><span class="pl-smi">ManagedChannel</span> channel <span class="pl-k">=</span> <span class="pl-c1">null</span>;
+<span class="pl-smi">InputStream</span> is <span class="pl-k">=</span> <span class="pl-c1">null</span>;
+<span class="pl-k">try</span> {
+    is <span class="pl-k">=</span> getResources()<span class="pl-k">.</span>getAssets()<span class="pl-k">.</span>open(<span class="pl-s"><span class="pl-pds">"</span>grpc.crt<span class="pl-pds">"</span></span>);
+    channel <span class="pl-k">=</span> <span class="pl-smi">ChannelBuilder</span><span class="pl-k">.</span>buildTls(
+        <span class="pl-s"><span class="pl-pds">"</span>todoworld.servicestack.net<span class="pl-pds">"</span></span>, <span class="pl-c1">50051</span>, is);
+    is<span class="pl-k">.</span>close();
+} <span class="pl-k">catch</span> (<span class="pl-smi">Throwable</span> e) {
+    e<span class="pl-k">.</span>printStackTrace();
+}</pre></div>
+<p>Lets update the gRPC API call to reflect we're now using an SSL channel:</p>
+<div class="highlight highlight-source-java"><pre>client<span class="pl-k">.</span>getHello(<span class="pl-smi">Services</span><span class="pl-k">.</span><span class="pl-smi">Hello</span><span class="pl-k">.</span>newBuilder()
+    .setName(<span class="pl-s"><span class="pl-pds">"</span>gRPC SSL<span class="pl-pds">"</span></span>)<span class="pl-k">.</span>build(),</pre></div>
+<p>Now after re-running our App it'll perform gRPC SSL Service requests instead:</p>
+<p><a href="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/android/android-grpc-ssl.png" target="_blank" rel="nofollow"><img src="https://raw.githubusercontent.com/NetCoreApps/todo-world/master/src/TodoWorld/wwwroot/assets/img/android/android-grpc-ssl.png" alt="" style="max-width:100%;"></a></p>
+<p>Refer to <a href="https://github.com/NetCoreApps/todo-world/tree/master/src/mobile/java/AndroidGrpc">/src/mobile/java/AndroidGrpc</a>
+for a complete example project.</p>
+</div>

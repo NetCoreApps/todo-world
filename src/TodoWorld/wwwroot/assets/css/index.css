@@ -560,6 +560,12 @@ body {
 .tabs .php {
 	color: #369;
 }
+.tabs .flutter {
+	color: #5CAEF6;
+}
+.tabs .android {
+	color: #78C257;
+}
 .grpc-docs{
 }
 

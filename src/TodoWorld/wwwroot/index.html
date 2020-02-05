@@ -22,6 +22,8 @@ window.TODOS = {{ 'GetTodos' |> execService |> get('Results') |> json }};
             <li><a href="#python">Python</a></li>
             <li><a href="#ruby">Ruby</a></li>
             <li><a href="#php">PHP</a></li>
+            <li><a href="#flutter">Flutter</a></li>
+            <li><a href="#android">Android</a></li>
         </ul>
         <h4>gRPC Web</h4>
         <ul>
@@ -151,6 +153,8 @@ window.TODOS = {{ 'GetTodos' |> execService |> get('Results') |> json }};
     <a name="python"></a>
     <a name="ruby"></a>
     <a name="php"></a>
+    <a name="flutter"></a>
+    <a name="android"></a>
 
     <div class="row p bg-protoc">
         Google protoc gRPC generated Service Clients
@@ -169,8 +173,8 @@ window.TODOS = {{ 'GetTodos' |> execService |> get('Results') |> json }};
             <div class="tab python" data-click="tab:python"><span>Python</span></div>
             <div class="tab ruby" data-click="tab:ruby"><span>Ruby</span></div>
             <div class="tab php" data-click="tab:php"><span>PHP</span></div>
-            <div class="tab"></div>
-            <div class="tab"></div>
+            <div class="tab flutter" data-click="tab:flutter"><span>Flutter</span></div>
+            <div class="tab android" data-click="tab:android"><span>android</span></div>
             <div class="tab"></div>
 <!--            
             <div class="tab cpp" data-click="tab:cpp"><span>C++</span></div>
@@ -224,6 +228,16 @@ window.TODOS = {{ 'GetTodos' |> execService |> get('Results') |> json }};
             <div class="tab-pane php" data-youtube-id="lRy3qb-x2Yc">
                 <div class="code">
                     {{ 'gfm/php.md' |> githubMarkdown }}
+                </div>
+            </div>
+            <div class="tab-pane flutter" data-youtube-id="t83gDzEGpac">
+                <div class="code">
+                    {{ 'gfm/flutter.md' |> githubMarkdown }}
+                </div>
+            </div>
+            <div class="tab-pane android" data-youtube-id="nag0hr5THug">
+                <div class="code">
+                    {{ 'gfm/android.md' |> githubMarkdown }}
                 </div>
             </div>
 
