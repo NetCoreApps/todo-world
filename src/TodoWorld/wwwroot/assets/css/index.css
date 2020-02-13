@@ -472,6 +472,12 @@ body {
 	color: #fff !important;
 	margin: 1em 0;
 }
+.bg-ssref {
+	background: #175358;
+	background: linear-gradient(to right, rgba(117,24,78,1) 0%, rgba(84,34,72,1) 100%);
+	color: #fff !important;
+	margin: 1em 0;
+}
 .row.generic .tabs {
 	text-align: center;
 	margin: 1em 0 .7em 0;
@@ -495,6 +501,21 @@ body {
 }
 .row.protoc .tab.java-lite, .row.protoc .tab.objc {
 	width: 37%;
+}
+.row.ssref h2 {
+	margin-bottom: .25em;
+	color: rgba(84,34,72,1);
+}
+.row.ssref .tabs {
+	text-align: center;
+	margin: 1em 0 .7em 0;
+}
+.row.ssref .tabs div {
+	font-size: 60px;
+	line-height: 80px;
+	display: inline-block;
+	width: 49%;
+	margin: .2em 0;
 }
 .tabs span {
 	display: inline-block;
@@ -537,6 +558,12 @@ body {
 }
 .tabs .dart {
 	color: #29B6F6;
+}
+.tabs .kotlin {
+	color: #F85D06;
+}
+.tabs .react-native {
+	color: #3096FF;
 }
 .tabs .go {
 	color: #00ACD7;
@@ -603,14 +630,20 @@ code {
 	border-radius: 2px;
 	white-space: nowrap;
 }
-
+@media (max-width: 1600px) {
+	.desktop {
+		display: none;
+	}
+}
+@media (max-width: 1400px) {
+	#sidebar {
+		display: none;
+	}
+}
 @media (max-width: 1024px) {
 	.row.protoc .tabs div {
 		font-size: 50px;
 		line-height: 70px;		
-	}
-	#sidebar {
-		display: none;
 	}
 	.youtube {
 		text-align: center;

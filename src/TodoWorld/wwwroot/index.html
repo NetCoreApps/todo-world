@@ -31,6 +31,14 @@ window.TODOS = {{ 'GetTodos' |> execService |> get('Results') |> json }};
             <li><a href="#grpc-web">Closure</a></li>
             <li><a href="#grpc-web">Common JS</a></li>
         </ul>
+        <h4><span class="desktop">Add </span>ServiceStack Reference</h4>
+        <ul>
+            <li><a href="#csharp-ssref">C# / Xamarin</a></li>
+            <li><a href="#dart-ssref">Dart / Flutter</a></li>
+            <li><a href="#kotlin-ssref">Kotlin / Android</a></li>
+            <li><a href="#java-ssref">Java / Android</a></li>
+            <li><a href="#js-ssref">JS / React Native</a></li>
+        </ul>
     </div>
 </div>
 
@@ -102,7 +110,7 @@ window.TODOS = {{ 'GetTodos' |> execService |> get('Results') |> json }};
 
 <div class="container">
     <div class="row p bg-net">
-        Smart Generic .NET gRPC Service Client using clean programming model and rich POCO DTOs
+        Smart Generic .NET gRPC Service Client using Clean APIs and Rich POCO DTOs
     </div>
 </div>
 {{/raw}}
@@ -176,11 +184,6 @@ window.TODOS = {{ 'GetTodos' |> execService |> get('Results') |> json }};
             <div class="tab flutter" data-click="tab:flutter"><span>Flutter</span></div>
             <div class="tab android" data-click="tab:android"><span>android</span></div>
             <div class="tab"></div>
-<!--            
-            <div class="tab cpp" data-click="tab:cpp"><span>C++</span></div>
-            <div class="tab java-lite" data-click="tab:java-lite"><span>Java (Lite)</span></div>
-            <div class="tab objc" data-click="tab:objc"><span>Objective-C</span></div>
--->
         </div>
 
         <div class="tab-content">
@@ -263,6 +266,73 @@ window.TODOS = {{ 'GetTodos' |> execService |> get('Results') |> json }};
         {{ 'gfm/grpc-web.md' |> githubMarkdown }}
     </div>
 </div>
+
+
+<div class="container">
+    <a name="csharp-ssref"></a>
+    <a name="dart-ssref"></a>
+    <a name="kotlin-ssref"></a>
+    <a name="java-ssref"></a>
+    <a name="js-ssref"></a>
+    <div class="row ssref">
+        <h2>Add ServiceStack Reference</h2>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row p bg-ssref">
+        Smart Generic Typed Idiomatic JSON Service Clients using Clean APIs and Rich POCO DTOs
+    </div>
+</div>
+
+<div class="container">
+    <div class="row ssref nav-tabs">
+        <div class="tabs">
+            <div class="tab csharp-ssref csharp active" data-click="tab:csharp-ssref"><span>C# / Xamarin</span></div>
+            <div class="tab dart-ssref dart" data-click="tab:dart-ssref"><span>Dart / Flutter</span></div>
+            <div class="tab kotlin-ssref kotlin" data-click="tab:kotlin-ssref"><span>Kotlin / Android</span></div>
+            <div class="tab java-ssref java" data-click="tab:java-ssref"><span>Java / Android</span></div>
+            <div class="tab js-ssref react-native" data-click="tab:js-ssref"><span>JS / React Native</span></div>
+        </div>
+
+        <div class="tab-content">
+            <div class="youtube"></div>
+            <div class="tab-pane csharp-ssref active" data-youtube-id="EaUcPXVeLpk">
+                <div class="code">
+                    {{ 'gfm/csharp-ssref.md' |> githubMarkdown }}
+                </div>
+            </div>
+            <div class="tab-pane dart-ssref" data-youtube-id="EwOwbZ9mUZk">
+                <div class="code">
+                    {{ 'gfm/dart-ssref.md' |> githubMarkdown }}
+                </div>
+            </div>
+            <div class="tab-pane kotlin-ssref" data-youtube-id="nmB0NaI9-3k">
+                <div class="code">
+                    {{ 'gfm/kotlin-ssref.md' |> githubMarkdown }}
+                </div>
+            </div>
+            <div class="tab-pane java-ssref" data-youtube-id="xg677weFef4">
+                <div class="code">
+                    {{ 'gfm/java-ssref.md' |> githubMarkdown }}
+                </div>
+            </div>
+            <div class="tab-pane js-ssref" data-youtube-id="T3KTDPdovOw">
+                <div class="code">
+                    {{ 'gfm/js-ssref.md' |> githubMarkdown }}
+                </div>
+            </div>
+
+            <div class="gfm" style="margin:100px 0">
+                <p class="grpc-docs">
+                    Visit <a href="https://docs.servicestack.net/add-servicestack-reference">Add ServiceStack Reference</a> docs for more info.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
 
 {{#raw appendTo scripts}}
 
