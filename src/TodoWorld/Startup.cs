@@ -55,6 +55,14 @@ namespace TodoWorld
             Plugins.Add(new ValidationFeature());
             Plugins.Add(new ServerEventsFeature());
             Plugins.Add(new GrpcFeature(App));
+            Plugins.Add(new CorsFeature(allowOriginWhitelist:new[] {
+                "http://localhost:3000",
+                "http://localhost:8000",
+                "http://localhost:5000",
+                "http://localhost:8080",
+                "https://localhost:5001",
+                "http://localhost:59812",
+            }, allowCredentials:true));
         }
     }
 }
