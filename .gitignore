@@ -6,6 +6,8 @@
 *.user
 *.userosscache
 *.sln.docstates
+deploy.bat
+deploy.sh
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
