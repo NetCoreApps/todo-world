@@ -1,2 +1,2 @@
-# todo-world
-Exploring the wide world around ServiceStack Services in a Todo App!
+# grpc
+GRPC .NET Core 3.0

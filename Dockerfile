@@ -1,23 +1,13 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0-focal AS build
 WORKDIR /app
 
-# copy csproj and restore as distinct layers
-COPY src/Host.sln .
-COPY src/NuGet.Config .
-COPY src/TodoWorld/*.csproj ./TodoWorld/
-COPY src/TodoWorld.ServiceInterface/*.csproj ./TodoWorld.ServiceInterface/
-COPY src/TodoWorld.ServiceModel/*.csproj ./TodoWorld.ServiceModel/
+COPY ./ .
 RUN dotnet restore
 
-# copy everything else and build app
-COPY src/TodoWorld/. ./TodoWorld/
-COPY src/TodoWorld.ServiceInterface/. ./TodoWorld.ServiceInterface/
-COPY src/TodoWorld.ServiceModel/. ./TodoWorld.ServiceModel/
 WORKDIR /app/TodoWorld
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -c release -o /out --no-restore
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-focal AS runtime
 WORKDIR /app
-COPY --from=build /app/TodoWorld/out ./
-ENV ASPNETCORE_URLS http://*:5000
+COPY --from=build /out .
 ENTRYPOINT ["dotnet", "TodoWorld.dll"]

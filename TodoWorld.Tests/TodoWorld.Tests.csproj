@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <DebugType>portable</DebugType>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TodoWorld.ServiceInterface\TodoWorld.ServiceInterface.csproj" />
+    <ProjectReference Include="..\TodoWorld.ServiceModel\TodoWorld.ServiceModel.csproj" />
+
+    <PackageReference Include="NUnit" Version="3.12.*" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.*" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.*" />
+    <PackageReference Include="ServiceStack" Version="6.*" />
+    <PackageReference Include="ServiceStack.Kestrel" Version="6.*" />
+    <PackageReference Include="ServiceStack.Extensions" Version="6.*" />
+    <PackageReference Include="ServiceStack.GrpcClient" Version="6.*" />
+  </ItemGroup>
+
+</Project>
