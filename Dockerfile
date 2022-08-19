@@ -7,6 +7,7 @@ RUN dotnet restore
 WORKDIR /app/TodoWorld
 RUN dotnet publish -c release -o /out --no-restore
 WORKDIR /app/clients/certs
+RUN chmod +x /app/clients/certs/gen-prod.https.sh
 RUN /app/clients/certs/gen-prod.https.sh todo-world.web-apps.io
 RUN cp /app/clients/certs/prod.pfx /out/prod.pfx
 
