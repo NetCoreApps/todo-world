@@ -4,12 +4,32 @@ services:
     image: ghcr.io/${IMAGE_REPO}:${RELEASE_VERSION}
     restart: always
     network_mode: bridge
-    ports:
-      - "80"
-      - "5051:5051"
-      - "5054:5054"
     environment:
       VIRTUAL_HOST: ${HOST_DOMAIN}
       LETSENCRYPT_HOST: ${HOST_DOMAIN}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
       DEPLOY_API: ${DEPLOY_API}
+      
+  ${APP_NAME}-grpc-proxy1:
+    image: marcnuri/port-forward
+    restart: always
+    network_mode: bridge
+    ports:
+      - "50051"
+    environment:
+      VIRTUAL_HOST: ${HOST_DOMAIN}
+      VIRTUAL_PORT: 50051
+      REMOTE_HOST: ${APP_NAME}
+      REMOTE_PORT: 5054
+      
+  ${APP_NAME}-grpc-proxy2:
+    image: marcnuri/port-forward
+    restart: always
+    network_mode: bridge
+    ports:
+      - "50052"
+    environment:
+      VIRTUAL_HOST: ${HOST_DOMAIN}
+      VIRTUAL_PORT: 50052
+      REMOTE_HOST: ${APP_NAME}
+      REMOTE_PORT: 5051
