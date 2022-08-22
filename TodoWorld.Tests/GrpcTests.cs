@@ -107,7 +107,7 @@ namespace TodoWorld.Tests
         [Test] 
         public async Task Can_GET_Hello_TodoWorld_Secure()
         {
-            var client = new GrpcServiceClient(GrpcChannel.ForAddress("https://todoworld.servicestack.net:5051", new GrpcChannelOptions
+            var client = new GrpcServiceClient(GrpcChannel.ForAddress("https://todoworld.servicestack.net:50051", new GrpcChannelOptions
             {
                 HttpClient = new HttpClient(new HttpClientHandler()
                     .AddPemCertificateFromFile("../../../../clients/certs/prod.crt")
@@ -122,7 +122,7 @@ namespace TodoWorld.Tests
         [Test] 
         public async Task Can_GET_Hello_TodoWorld_Secure_grpc()
         {
-            var client = new GrpcServiceClient(GrpcChannel.ForAddress("https://todoworld.servicestack.net:5051", new GrpcChannelOptions
+            var client = new GrpcServiceClient(GrpcChannel.ForAddress("https://todoworld.servicestack.net:50052", new GrpcChannelOptions
             {
                 HttpClient = new HttpClient(new HttpClientHandler()
                     .AddPemCertificateFromFile("../../../../clients/certs/prod.crt")
