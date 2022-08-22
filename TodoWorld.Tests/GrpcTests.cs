@@ -69,7 +69,7 @@ namespace TodoWorld.Tests
         [OneTimeTearDown]
         public void OneTimeTearDown() => appHost.Dispose();
 
-        [Test] // Requires Host project running on http://localhost:5002 (HTTP2) 
+        [Test, Explicit] // Requires Host project running on http://localhost:5002 (HTTP2) 
         public async Task Can_GET_Hello_WebHost_Insecure()
         {
             var client = new GrpcServiceClient("http://localhost:5002");
@@ -79,7 +79,7 @@ namespace TodoWorld.Tests
             Assert.That(response.Result, Is.EqualTo("Hello, World!"));
         }
 
-        [Test] // Requires Host project running on https://localhost:5001 (HTTP2 SSL) 
+        [Test, Explicit] // Requires Host project running on https://localhost:5001 (HTTP2 SSL) 
         public async Task Can_GET_Hello_WebHost_Secure()
         {
             var client = new GrpcServiceClient(GrpcChannel.ForAddress("https://localhost:5001", new GrpcChannelOptions
@@ -107,7 +107,7 @@ namespace TodoWorld.Tests
         [Test] 
         public async Task Can_GET_Hello_TodoWorld_Secure()
         {
-            var client = new GrpcServiceClient(GrpcChannel.ForAddress("https://todoworld.servicestack.net:50051", new GrpcChannelOptions
+            var client = new GrpcServiceClient(GrpcChannel.ForAddress("https://todoworld.servicestack.net:5051", new GrpcChannelOptions
             {
                 HttpClient = new HttpClient(new HttpClientHandler()
                     .AddPemCertificateFromFile("../../../../clients/certs/prod.crt")
@@ -122,7 +122,7 @@ namespace TodoWorld.Tests
         [Test] 
         public async Task Can_GET_Hello_TodoWorld_Secure_grpc()
         {
-            var client = new GrpcServiceClient(GrpcChannel.ForAddress("https://todoworld.servicestack.net:50052", new GrpcChannelOptions
+            var client = new GrpcServiceClient(GrpcChannel.ForAddress("https://todoworld.servicestack.net:5051", new GrpcChannelOptions
             {
                 HttpClient = new HttpClient(new HttpClientHandler()
                     .AddPemCertificateFromFile("../../../../clients/certs/prod.crt")
