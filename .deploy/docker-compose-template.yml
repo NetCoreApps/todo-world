@@ -3,7 +3,6 @@ services:
   ${APP_NAME}:
     image: ghcr.io/${IMAGE_REPO}:${RELEASE_VERSION}
     restart: always
-    network_mode: bridge
     ports:
       - "80"
       - "5051:5051"
@@ -13,3 +12,8 @@ services:
       LETSENCRYPT_HOST: ${HOST_DOMAIN}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
       DEPLOY_API: ${DEPLOY_API}
+
+networks:
+  default:
+    external: true
+    name: nginx
